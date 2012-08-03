@@ -1,0 +1,10 @@
+<div class="sidebar_block">
+    <div class="header clearfix">
+        <h3>标签</h3>
+    </div>
+    <div class="content tags clreafix">
+        {% for tag in Tag.all().filter('amount >', 0) %}
+            <a href="/tag/{{ tag.name }}"><span class="badge">{{ tag.name }}</span></a>
+        {% end %}
+    </div>
+</div>

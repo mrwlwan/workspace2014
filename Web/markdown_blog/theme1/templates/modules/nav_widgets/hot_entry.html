@@ -1,0 +1,10 @@
+<div class="header clearfix">
+    <h2>热文排行</h2>
+</div>
+<ul class="content nav nav-lilst">
+{% for entry in Entry.all().filter('status =', 'active').order('-pv').fetch(5) %}
+    <li>
+        <a href="/entry/{{ entry.slug }}"><i class="icon-fire"></i>{{ entry.title }}</a>
+    </li>
+{% end %}
+</ul>

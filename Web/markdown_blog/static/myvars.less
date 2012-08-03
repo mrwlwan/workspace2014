@@ -1,0 +1,25 @@
+// 背景基调颜色.
+@base_bg_color: #CCC;
+// 内容的背景颜色. 白色
+@base_content_bg_color: #FFF;
+// shadow的颜色基调
+@base_shadow_color: darken(@base_bg_color, 50%);
+// border 颜色基调.
+@base_border_color: lighten(@base_bg_color, 5%);
+// 基本间隔 18px, 相当于1.5em.
+@base_interval: 1.5em; 
+// 顶部导航栏的高度, bootstrap 默认为40px(3em);
+@head_nav_height: 3em;
+// 顶部banner的高度.
+@head_banner_height: 160px;
+
+// 内容左边的padding
+@content_padding: 1em;
+
+.box_shadow (@x: 5px, @y: 5px, @size: 5px, @color: @base_shadow_color) {
+    box-shadow: @x @y @size @color;
+}
+
+.content_padding () {
+    padding: @content_padding / 2 @content_padding;
+}

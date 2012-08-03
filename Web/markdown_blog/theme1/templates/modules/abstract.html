@@ -1,0 +1,12 @@
+<h2 class="title"><a href="/entry/{{ item.slug }}">{{ item.title }}</a></h2>
+{% module Template('modules/shortcut.html', item=item) %}
+{% if has_content %}
+<div class="content">
+    {% raw item.abstract %}
+</div>
+{% end %}
+<div class="meta">
+    <span class="author">{{ item.author }}</span>
+    //
+    <span class="date">{{ item.published.strftime('%d %b %Y') }}</span>
+</div>

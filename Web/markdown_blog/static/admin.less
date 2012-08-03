@@ -1,0 +1,36 @@
+@import "myvars.less";
+
+body {
+    padding-top: 58px;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+// #main_sidebar
+#main_sidebar {
+    .accordion-heading a{
+        font-size: 1.5em;
+        font-weight: bold;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+// #主体内容区
+
+#main_content {
+    .inner_content {
+        min-height: 4em;
+        padding: 9px 15px;
+    }
+    #admin_entry_form {
+        #entry_refresh_btn {
+            float: right;
+        }
+        #entry_page {
+            width: 2em;
+            margin: 0;
+        }
+    }
+}

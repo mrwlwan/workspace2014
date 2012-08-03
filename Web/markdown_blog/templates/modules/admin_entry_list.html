@@ -1,0 +1,9 @@
+{% for entry in entries %}
+<tr>
+    <td><a href="/entry/{{ entry.slug }}" target="_blank">{{ entry.title }}</a></td>
+    <td>{{ entry.author }}</td>
+    <td>{{ entry.published.strftime('%Y-%m-%d') }}</td>
+    <td>{{ entry.pv }}</td>
+    <td><a href="/compose/{{ entry.key() }}">编辑</a><a href="/compose/{{ entry.key() }}?status=removed">删除</a></td>
+</tr>
+{% end %}

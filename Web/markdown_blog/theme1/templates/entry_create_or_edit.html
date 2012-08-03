@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% module Template('modules/breadcrumb.html', kind=kind, breadcrumbs=['compose']) %}
+    {% module Template('modules/entry_form.html', kind=kind, action=action, entry=entry) %}
+{% end %}
+{% block right_nav %}
+{% end %}

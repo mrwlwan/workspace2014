@@ -1,0 +1,7 @@
+{% if current_user and current_user.is_admin %}
+    状态:
+    <span class="label label-info">{{ item.status }}</span>
+    快捷操作:
+    <a href="/compose/{{ item.key() }}" class="show_modal xhr">编辑</a>
+    <a href="/compose/{{ item.key() }}?status=removed" class="show_modal confirm">删除</a>
+{% end %}

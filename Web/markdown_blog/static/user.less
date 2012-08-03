@@ -1,0 +1,239 @@
+@import "myvars.less";
+
+body {
+    // 适应顶部 fixed 的head_nav.
+    padding-top: @head_nav_height;
+    background-color: @base_bg_color;
+}
+///////////////////////////////////////////////////////////////////////////////////
+// 顶部导航栏
+#head_nav {
+    height: @head_nav_height;
+    opacity: 0.9;
+    .brand {
+        text-shadow: 1px 1px white, -1px -1px #222;
+        font-weight: bold;
+    }
+    .search-query {
+        width: 6em;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+// 顶部 banner
+#head_banner {
+    height: @head_banner_height;
+    border-bottom: 0.5em solid darken(@base_bg_color, 20%);
+    background-image: url('/static/img/head_banner_bg.png');
+    background-position: center;
+    cursor: default;
+    .box_shadow(0px);
+    .header {
+        padding-top: @head_banner_height / 3;
+        h1 {
+            text-shadow: 4px 4px 4px;
+            font-size: 3em;
+        }
+        em {
+            padding-left: 2.5em;
+        }
+    }
+    .contact a {
+        margin-right: 0.5em;
+        float: right;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+// main主体
+#main {
+    .header {
+        cursor: default;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+// main_content 主体内容显示区
+#main_content {
+    > * {
+        background-color: @base_content_bg_color;
+        .box_shadow(0,0,4px,@base_shadow_color);
+    }
+    .bottom_meta > span{
+        float: right;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+// index.html
+#main_content {
+    .block {
+        border-radius: 4px;
+        margin-bottom: @base_interval;
+        .breadcrumb {
+            border: none;
+            border-bottom: 1px solid @base_border_color;
+        }
+        .header {
+            .content_padding();
+            border-bottom: 1px solid @base_border_color;
+            h3 {
+            }
+            a {
+                float: right;
+                line-height: 2em;
+            }
+        }
+        .latest > *, .list > *{
+            padding: 0 @content_padding @content_padding / 2 @content_padding;
+        }
+        .list .bottom_meta {
+            border-bottom: 1px solid @base_border_color;
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+        form {
+            .content_padding();
+            textarea {
+                width: 98%;
+            }
+            input[type=text] {
+                width: 75%;
+                max-width: 30em;
+            }
+        }
+        .entry {
+            .content_padding();
+            margin-bottom: @base_interval;
+            > :last-child {
+                margin-bottom: none;
+            }
+            .top_meta {
+                border-bottom: 1px solid @base_border_color;
+                padding: @content_padding / 2 0;
+            }
+            .content {
+                padding-top: @content_padding /2 ;
+            }
+        }
+    }
+    .block-list {
+        .entry {
+            border-bottom: 1px solid @base_border_color;
+            &:last-child {
+                border-bottom: none;
+            }
+            .top_meta {
+                border: none;
+            }
+        }
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+// main_sidebar 侧边栏
+#main_sidebar {
+    padding-bottom: @base_interval;
+    > * {
+        background-color: @base_content_bg_color;
+        .box_shadow();
+    }
+    .sidebar_block {
+        border-radius: 4px;
+        > * {
+            padding: @content_padding / 2 @content_padding;
+        }
+        .header {
+            border-bottom: 1px solid @base_border_color;
+        }
+    }
+    .tags a{
+        line-height: 1.5em;
+    }
+    i {
+        margin-right: @base_interval / 3;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+// Footer
+#footer {
+    padding: @content_padding / 2 @content_padding;
+    border-radius: 4px;
+    background-color: darken(@base_bg_color, 10%);
+    a[class^=icon] {
+        margin-right: 0.5em;
+    }
+    p {
+        text-align: right;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////
+// Change bootstrap class
+.dropdown-menu {
+    min-width: 1em;
+}
+
+.pagination {
+    padding: 0 @content_padding @content_padding / 2 0;
+    ul {
+        float:right;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// icon-XXX classes
+.myicon (@url, @size:41px, @opacity:0.5, @opacity_hover: 1) {
+    background: url("img/@{url}") no-repeat scroll 0 0 transparent;
+    width: @size;
+    height: @size;
+    opacity: @opacity;
+    &:hover {
+        opacity: @opacity_hover;
+        .box_shadow();
+    }
+}
+
+.icon-rss {
+    .myicon("rss.png");
+}
+.icon-wb {
+    .myicon("wb.png");
+}
+.icon-wp {
+    .myicon("wp.png");
+}
+.icon-tw {
+    .myicon("tw.png");
+}
+
+.icon-firefox {
+    .myicon("firefox.gif", 30px, 0.8);
+}
+.icon-chrome{
+    .myicon("chrome.gif", 30px, 0.8);
+}
+.icon-safari{
+    .myicon("safari.gif", 30px, 0.8);
+}
+.icon-opera{
+    .myicon("opera.gif", 30px, 0.8);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+// other single class
+.text_right {
+    text-align: right;
+}
+.text_center {
+    text-align: center;
+}
+// ajax 特效之用
+.loading {
+    background: rgb(255,255,255) url(img/loading.gif) no-repeat center center;
+    min-height: 3em;
+}
+
+.tags a:hover {
+    text-decoration: none;
+}
+
+p.reference {
+    text-align: right;
+}

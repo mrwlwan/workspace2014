@@ -1,0 +1,22 @@
+<h3 class="title"><a href="/entry/{{ item.slug }}">{{ item.title }}</a></h3>
+{% if current_user and current_user.is_admin %}
+<div class="top_meta">
+    {% module Template('modules/shortcut.html', item=item) %}
+</div>
+{% end %}
+{% if has_content %}
+<div class="content">
+    {% raw item.abstract %}
+</div>
+{% end %}
+<div class="bottom_meta clearfix">
+    <span >作者: {{ item.author }} // 日期: {{ item.published.strftime('%d %b %Y') }}</span>
+    {% if has_tags %}
+    <div class="tags">
+        标签: 
+        {% for tag in Tag.all().order('-amount').fetch(5) %}
+            <a href="/tag/{{ tag.name }}"><span class="badge">{{ tag.name }}</span></a>
+        {% end %}
+    </div>
+    {% end %}
+</div>

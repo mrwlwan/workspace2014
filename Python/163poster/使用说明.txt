@@ -1,0 +1,12 @@
+本脚本是通过网易的手机版接口进行灌水的, 因为网易的手机版缓存问题, 回复的帖子并不会即时显示在电脑版下, 只需要在电脑版下的帖子随便回复一个, 即可显示.
+
+下面是本脚本测试的两个帖子:
+http://bbs.lady.163.com/bbs/pingming/228165273.html
+http://bbs.tech.163.com/bbs/tech02/230560189.html
+
+安装使用方法:
+1. 下载并安装 Python 环境, 下载地址: http://www.python.org/ftp/python/3.2.2/python-3.2.2.msi
+
+2. 双击 main.py 文件即可自动运行. 如果要测试, 请在 cmd 窗口打开: python main.py, 如果脚本出错, 可以看到出错信息, 以便反馈.
+
+3. config.cft 文件中的 sectionX 为用户设置区, 请尽量不要修改 Global 的设置. config.cft 文件默认有一个 section1, 用户可以复制 section1, 添加 section2, section3 等等

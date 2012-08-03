@@ -1,0 +1,39 @@
+<div id="head_nav" class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="#">KISS!</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li><a href="/">首页</a></li>
+                    <li><a href="/blog">日志</a></li>
+                    <li><a href="/news">资讯</a></li>
+                    <li><a href="/remark">奇文</a></li>
+                    <li><a href="/page/about">关于</a></li>
+                </ul>
+                <form class="navbar-search pull-left" action="/search" method="POST">
+                    <input type="text" class="search-query" placeholder="搜索...">
+                </form>
+                <ul class="nav pull-right">
+                    {% if current_user %}
+                        {% if current_user.is_admin %}
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-pencil icon-white"></i>撰写<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                            {% for kind in KINDS.values() %}
+                                <li><a href="/compose?kind_name={{ kind.name }}">{{ kind.verbose_name }}</a></li>
+                            {% end %}
+                            </ul>
+                        </li>
+                        <li><a href="/admin"><i class="icon-cog icon-white"></i>管理</a></li>
+                        {% end %}
+                        <li><a href="{{ users.create_logout_url(request.uri) }}"><i class="icon-off icon-white"></i>退出</a></li>
+                        <li><a href="#"><i class="icon-user icon-white"></i>欢迎 {{ current_user.nickname() or current_user.email() }}</a></li>
+                    {% else %}
+                        <li><a href="{{ users.create_login_url(request.uri) }}"><i class="icon-user icon-white"></i>登录</a></li>
+                    {% end %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/head_nav.js"></script>

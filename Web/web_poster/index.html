@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Web Poster</title>
+    <link rel="stylesheet" href="lib/js/dojo/resources/dojo.css">
+    <link rel="stylesheet" href="lib/js/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="css/user.css">
+    <script src="lib/js/dojo/dojo.js" data-dojo-config="isDebug:true, parseOnLoad:true"></script>
+    <script src="lib/js/dijit/dijit.js"></script>
+    <script src="script/user.js"></script>
+</head>
+<body class="claro">
+	<div id="app_layout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design:'sidebar'">
+        <!--Left Panel-->
+        <div id="left_panel" data-dojo-type="dijit.layout.AccordionContainer" data-dojo-props="region: 'left', splitter: true">
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title: '抓取网页', href:'/block/get_form', loadingMessage: '加载中...', preload: true"></div>
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title: '基本设置', href: '/block/general_form', loadingMessage: '加载中...', preload: true"></div>
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title: '其它', href: '/block/others', loadingMessage: '加载中...'"></div>
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title: '保存&加载', href: '/block/session_form', loadingMessage: '加载中...'"></div>
+        </div>
+        <!--Top Panel-->
+        <div id="top_panel" data-dojo-type="dijit.layout.TabContainer" data-dojo-props="region: 'top', splitter: true">
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title: '搜索', href: '/block/search_form', loadingMessage: '加载中...'"></div>
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title: '正则匹配', href: '/block/re_test_form', loadingMessage: '加载中...'"></div>
+        </div>
+        <!--Center Panel-->
+        <div id="center_panel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'center'">
+            <!--<pre id="content"></pre>-->
+            <textarea id="content" data-dojo-type="dijit.form.SimpleTextarea" data-dojo-props="readOnly: true"></textarea>
+        </div>
+        <!--Bottom Panel-->
+        <div id="bottom_panel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'bottom'">
+            <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: clear_content_message">清空消息</button>
+            <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: save_content_message">保存</button>
+            <input id="is_content_keep" data-dojo-type="dijit.form.CheckBox" /><label for="is_content_keep">保留</label>
+            <input id="is_content_scroll" data-dojo-type="dijit.form.CheckBox" data-dojo-props="checked: true" /><label for="is_content_scroll">滚动</label>
+        </div>
+	</div>
+</body>
+</html>

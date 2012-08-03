@@ -1,0 +1,175 @@
+@padding: 2em;
+@body_bg: #EEE;
+
+.dropdown-menu {
+    min-width: 1em;
+}
+
+body {
+    background-color: @body_bg;
+    > .navbar {
+        opacity: 0.9;
+    }
+    > .head_banner {
+        position: relative;
+        padding-top: 40px;
+        height: 160px;
+        background: #DDDDDD url(img/head_banner_bg.gif) no-repeat scroll center 40px;
+        border-bottom: 7px solid #999;
+        .container {
+            padding-top: 50px;
+        }
+        h1 {
+            font-size: 3em;
+            cursor: pointer;
+            text-shadow: 5px 5px 5px;
+        }
+        em {
+            padding-left: 2.5em;
+        }
+        .contact {
+            position: relative;
+            padding: 0!important;
+        }
+    }
+    > .main_content {
+        padding-top: @padding;
+        min-height: 400px;
+    }
+}
+
+.entry form {
+    display: none;
+}
+
+.search-query {
+    width: 12em!important;
+}
+
+form .controls input[type="text"] {
+    width: 25em;
+}
+
+.entry-form textarea {
+    width: 98%;
+}
+
+.loading {
+    background: rgb(255,255,255) url(img/loading.gif) no-repeat center center;
+    min-height: 3em;
+}
+
+#content {
+    .header {
+        background-color: #404040;
+        color: #BEBEBE;
+        border-radius: 5px;
+        padding: 0.3em 1em 0.3em 1em;
+        h2 {
+            font-size: 1.5em;
+            display: inline;
+            float: left;
+            cursor: default;
+        }
+        a {
+            font-size: 1em;
+            float: right;
+            line-height: 3em;
+        }
+    }
+    .content {
+        padding-top: @padding - 1em;
+        margin-bottom: @padding / 2;
+    }
+    .meta {
+        color: #7A7A7A;
+        border-bottom: 1px dotted #7A7A7A;
+        padding-bottom: 0.5em;
+        margin-bottom: 0.5em;
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}
+
+#right_nav {
+    .header {
+        #content > .header;
+    }
+    .content {
+        #content > .content;
+        padding: auto 0.5em;
+        li {
+            padding-bottom: 1em;
+            margin-bottom: 1em;
+            border-bottom: 1px dotted #7A7A7A;
+            &:last-child {
+                border-bottom: none;
+            }
+            i {
+                margin-right: @padding / 4;
+            }
+        }
+    }
+}
+
+
+.entry .meta {
+    border-bottom: none;
+}
+
+// Just for IE
+.latest .meta {
+    border-bottom: none;
+}
+
+#right_nav {
+    background-color: white;
+}
+
+#footer {
+    background-color: #656565;
+    color: #C8C8C8;
+    padding: 1em;
+    margin-top: 1em;
+    a {
+        color: #C8C8C8;
+    }
+}
+
+
+.myicon (@url) {
+    background: url("img/@{url}") no-repeat scroll 0 0 transparent;
+    width: 41px;
+    height: 41px;
+    float: right;
+    margin-left: 0.5em;
+    opacity: 0.5;
+    &:hover {
+        opacity: 1;
+        box-shadow: 5px 5px 5px #404040;
+    }
+}
+
+.icon-rss {
+    .myicon("rss.png");
+}
+.icon-wb {
+    .myicon("wb.png");
+}
+.icon-wp {
+    .myicon("wp.png");
+}
+.icon-tw {
+    .myicon("tw.png");
+}
+
+.entry .content {
+    text-indent: 2em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.text_right {
+    text-align: right;
+}

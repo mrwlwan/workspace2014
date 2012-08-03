@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="block">
+    {% module Template('modules/breadcrumb.html', kind=item.entry_kind, breadcrumbs=[item.slug]) %}
+    {% module Template('modules/%s.html' % item.entry_kind.name, item=item) %}
+</div>
+{% end %}

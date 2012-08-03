@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+{% module Template('modules/breadcrumb.html', kind=kind, breadcrumbs=[]) %}
+{% for item in items %}
+    {% module Template('modules/abstract.html', has_content=True, item=item) %}
+{% end %}
+{% module Template('modules/pagination.html', base_url='/%s' % kind.name, page=page, max_page=max_page) %}
+{% end %}

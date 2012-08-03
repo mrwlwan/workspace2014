@@ -1,0 +1,20 @@
+{% set page_format = '%s?page={0}' % base_url %}
+<div class="pagination">
+    <ul>
+        <li{% if page<=1 %} class="disabled"{% end %}><a href="{{ page_format.format(page-1) }}">&laquo; 上一页</a></li>
+        {% if page>3 %}
+        <li><a href="{{ page_format.format(1) }}">1 ...</a></li>
+        {% end %}
+        {% for i in range(max(page-6+min(max_page-page, 4), 1), page) %}
+        <li><a href="{{ page_format.format(i) }}">{{ i }}</a></li>
+        {% end %}
+        <li class="active"><a href="{{ page_format.format(page) }}">{{ page }}</a></li>
+        {% for i in range(page+1, min(max_page+1, page+5)) %}
+        <li><a href="{{ page_format.format(i) }}">{{ i }}</a></li>
+        {% end %}
+        {% if max_page - page > 4 %}
+        <li><a href="{{ page_format.format(max_page) }}">... {{ max_page }}</a></li>
+        {% end %}
+        <li{% if page>=max_page %} class="disabled"{% end %}><a href="{{ page_format.format(page+1) }}">下一页 &raquo;</a></li>
+    </ul>
+</div>

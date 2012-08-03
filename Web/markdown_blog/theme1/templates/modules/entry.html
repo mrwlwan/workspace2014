@@ -1,0 +1,19 @@
+<div class="entry">
+    <h2 class="title"><a href="/entry/{{ item.slug }}">{{ item.title }}</a></h2>
+    <div class="meta">
+        作者: <span class="label inline">{{ item.author }}</span>
+        发表: <span class="label inline">{{ item.published.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+        {% if item.published %}更新: <span class="label inline">{{ item.published.strftime('%Y-%m-%d %H:%M:%S') }}</span>{% end %}
+    {% if current_user and current_user.is_admin %}
+        快捷操作:
+        <a href="/compose/{{ item.key() }}" class="show_modal xhr">编辑</a>
+        <a href="/compose/{{ item.key() }}?status=removed" class="show_modal confirm">删除</a>
+    {% end %}
+    </div>
+    <div class="content">
+        {% raw item.html %}
+    </div>
+    <div class="meta text_right">
+        {% if item.reference %}<em>原文转载自:</em><a href="{{ item.reference }}"><em>{{ item.reference }}</em></a>{% end %}
+    </div>
+</div>

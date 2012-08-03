@@ -1,0 +1,22 @@
+<div class="entry">
+    <h2 class="title"><a href="/entry/{{ item.slug }}">{{ item.title }}</a></h2>
+    <div class="top_meta">
+        作者: <span class="label inline">{{ item.author }}</span>
+        发表: <span class="label inline">{{ item.published.strftime('%Y-%m-%d') }}</span>
+        {% if item.published %}更新: <span class="label inline">{{ item.published.strftime('%Y-%m-%d') }}</span>{% end %}
+        {% module Template('modules/shortcut.html', item=item) %}
+    </div>
+    <div class="content">
+        {% raw item.html %}
+        <p class="reference">
+            {% if item.reference %}<em>原文转载自:</em><a href="{{ item.reference }}"><em>{{ item.reference }}</em></a>{% end %}
+        </p>
+    </div>
+    <div class="bottom_meta">
+        <div class="tags">
+            {% for entry_tag in item.entrytag_set %}
+            <a href="/tag/{{entry_tag.tag.name }}"><span class="badge">{{ entry_tag.tag.name }}</span></a>
+            {% end %}
+        </div>
+    </div>
+</div>

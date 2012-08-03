@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<!--日志-->
+<div class="header clearfix">
+    <h2>日志</h2><a href="/blog">All Posts</a>
+</div>
+<div class="content row">
+{% if blogs %}
+    <div class="latest span5">
+    {% module Template('modules/abstract.html', has_content=True, item=blogs[0]) %}
+    </div>
+    <div class="list span3">
+    {% for blog in blogs[1:] %}
+        {% module Template('modules/abstract.html', has_content=False, item=blog) %}
+    {% end %}
+    </div>
+{% end %}
+</div>
+<!--资讯-->
+<div class="header clearfix">
+    <h2>资讯</h2><a href="/news">All Posts</a>
+</div>
+<div class="content row">
+{% if newses %}
+    <div class="latest span5">
+    {% module Template('modules/abstract.html', has_content=True, item=newses[0]) %}
+    </div>
+    <div class="list span3">
+    {% for news in newses[1:] %}
+        {% module Template('modules/abstract.html', has_content=False, item=news) %}
+    {% end %}
+    </div>
+{% end %}
+</div>
+<!--奇文-->
+<div class="header clearfix">
+    <h2>奇文</h2><a href="/remark">All Posts</a>
+</div>
+<div class="content row">
+{% if remarks %}
+    <div class="latest span5">
+    {% module Template('modules/abstract.html', has_content=True, item=remarks[0]) %}
+    </div>
+    <div class="list span3">
+    {% for remark in remarks[1:] %}
+        {% module Template('modules/abstract.html', has_content=False, item=remark) %}
+    {% end %}
+    </div>
+{% end %}
+</div>
+{% end %}

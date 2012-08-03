@@ -1,0 +1,31 @@
+<form id="admin_entry_form" action="/admin/entry" method="POST">
+    <a id="entry_refresh_btn" href="#" class="btn btn-primary"><i class="icon-refresh"></i>刷新</a>
+    {% raw xsrf_form_html() %}
+    <input type="hidden" name="status" value="{{ status }}">
+    <select name="kind_name" id="entry_kind_select">
+        {% for kind_name, kind in KINDS.items() %}
+        <option value="{{ kind_name }}">{{ kind.verbose_name }}</option>
+        {% end %}
+    </select>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>作者</th>
+                <th>日期<i class="icon-circle-arrow-down"></i></th>
+                <th>浏览量</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="entry_list">
+            {% module Template('modules/admin_entry_list.html', entries=entries) %}
+        </tbody>
+    </table>
+    <div id="entry_page_nav">
+        <a href="#" class="btn previous"><i class="icon-backward"></i>上一页</a>
+        <input id="entry_page" name="page" type="text" value=1>
+        /
+        <span id="entry_total_page">{{ total_pages }}</span>
+        <a href="#" class="btn next">上一页<i class="icon-forward"></i></a>
+    </div>
+</form>

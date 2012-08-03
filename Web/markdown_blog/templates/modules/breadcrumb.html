@@ -1,0 +1,15 @@
+<ul class="breadcrumb">
+    <li>
+        <a href="/">首页</a>
+        <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="/{{ kind.name }}">{{ kind.verbose_name }}</a>
+    </li>
+    {% for breadcrumb in breadcrumbs %}
+        <li>
+            <span class="divider">/</span>
+            {{ breadcrumb }}
+        </li>
+    {% end %}
+</ul>

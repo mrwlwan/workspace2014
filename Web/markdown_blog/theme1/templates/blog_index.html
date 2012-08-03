@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if not entries.count() %}
+    没有写日记哦~~~{% if current_user and current_user.is_admin %}现在<a href="/compose">开始</a>吧 ^-^{% end %}
+    {% end %}
+    {% for entry in entries %}
+        {% module Template('modules/entry.html', entry=entry) %}
+    {% end %}
+{% end %}

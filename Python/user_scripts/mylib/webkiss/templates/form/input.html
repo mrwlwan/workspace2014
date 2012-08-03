@@ -1,0 +1,17 @@
+{% from webkiss.view import get_dict, get_dict_space, get_dict_left_space %}
+{% if column_format.get('form_type') == 'horizontal' %}
+<div class="control-group">
+    <label class="control-label" for="{{ column_name }}">{{ get_dict(column_format, 'verbose_name', column_name) }}</label>
+    <div class="controls">
+        <input name="{{ column_name }}" class="{{ get_dict(column_format, 'class') }}" placeholder="{{ get_dict(column_format, 'placeholder') }}"{% raw get_dict_left_space(column_format, 'attrs') %} value="{{ column_value or '' }}">
+        {% if 'help_text' in column_format %}
+        <span class="help-block">{{ column_format.get('help_text') }}</span>
+        {% end %}
+    </div>
+</div>
+{% elif column_format.get('form_type') == 'inline' %}
+<input name="{{ column_name }}" class="{{ get_dict_space(column_format, 'class', 'input-small') }}" placeholder="{{ get_dict(column_format, 'placeholder') }}"{% raw get_dict_left_space(column_format, 'attrs') %} value="{{ column_value or '' }}">
+{% else %}
+<label for="{{ column_name }}">{{ get_dict(column_format, 'verbose_name', column_name) }}</label>
+<input name="{{ column_name }}" class="{{ get_dict(column_format, 'class') }}" placeholder="{{ get_dict(column_format, 'placeholder') }}"{% raw get_dict_left_space(column_format, 'attrs') %} value="{{ column_value or '' }}">
+{% end %}

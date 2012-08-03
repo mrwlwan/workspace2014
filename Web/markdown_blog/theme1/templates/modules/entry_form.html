@@ -1,0 +1,72 @@
+<form class="entry-form" action="/compose{% if action=='edit' %}/{{ entry.key() }}{% end %}" method="POST" name="edit_form" id="edit_form">
+    {% raw xsrf_form_html() %}
+    <input type="hidden" name="entry_key" id="entry_key" value="{% if action=='edit' %}{{ entry.key() }}{% end %}">
+    <input type="hidden" name="kind_name" id="kind_name" value="{% if action=='create' %}{{ kind.name }}{% end %}">
+    <div class="control-group">
+        <label class="control-label" for="title">标题:</label>
+        <div class="controls">
+            <input type="text" id="title" name="title" class="required" autocomplete="off" placeholder="请输入标题..."{% if action=='edit' %} value="{{ entry.title }}"{% end %}>
+            {% if action=='edit' %}<span class="label label-info">{{ entry.status }}</span>{% end %}
+            <div class="clearfix help-block hide fade in">标题不能为空!</div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="slug">slug:</label>
+        <div class="controls">
+            <input type="text" id="slug" name="slug" class="{%if action=='create' %}disabled {% end %}required validate xhr"{% if action=='create' %} disabled=""{% end %} autocomplete="off" placeholder="请输入 slug..."{% if action=='edit' %} value="{{ entry.slug }}"{% end %}>
+            <label class="checkbox inline">
+                <input type="checkbox" id="auto_slug"{% if action=='create' %} checked{% end %} autocomplete="off">与标题相同
+            </label>
+            <div id="slug_help" class="clearfix help-block hide fade in">Slug 为空或者已经存在!</div>
+        </div>
+    </div>
+    {% if kind.name != 'blog' %}
+    <div class="control-group">
+        <label class="control-label" for="title">作者:</label>
+        <div class="controls">
+            <input type="text" id="author" name="author" class="required" placeholder="请输入作者名..." value="{% if action=='edit' %}{{ entry.author }}{% else %}{{ current_user.nickname() }}{% end %}">
+            <div class="clearfix help-block hide fade in">作者不能为空!</div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="title">原文链接:</label>
+        <div class="controls">
+            <input type="text" id="reference" name="reference"  placeholder="转载的文章链接..."{% if action=='edit' %} value="{{ entry.title }}"{% end %}>
+        </div>
+    </div>
+    {% end %}
+    <div class="control-group">
+        <ul class="nav nav-tabs" id="form_tabs">
+            <li class="active"><a href="#form_content" data-toggle="tab">内容</a></li>
+            <li><a href="#form_preview" data-toggle="tab">预览</a></li>
+        </ul>
+        <div class="tab-content controls">
+            <textarea  class="tab-pane active required" id="form_content" name="content" placeholder="请输入内容..." rows="10" cols="40">{% if action=='edit' %}{{ entry.markdown }}{% end %}</textarea>
+            <div class="clearfix help-block hide fade in">内容不能为空!</div>
+            <div class="tab-pane" id="form_preview">
+                {% if action=='edit' %}{% raw entry.html %}{% end %}
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="status">状态:</label>
+        <div class="controls">
+            <select id="status" name="status">
+            {% if action=='edit' %}
+            <option value="active"{% if entry.status=='active' %} selected{% end %}>发表</option>
+                {% if entry.status=='draft' %}
+                    <option value="draft" selected>草稿</option>
+                {% end %}
+                <option value="removed"{% if entry.status=='removed' %} selected{% end %}>删除</option>
+            {% else %}
+                <option value="active">发表</option>
+                <option value="draft">草稿</option>
+            {% end %}
+            </select>
+        </div>
+    </div>
+    <div class="form-actions">
+        <input class="btn btn-primary" type="submit" value="提交">
+        <input class="btn" type="reset" name="reset" value="重置"> 
+    </div>
+</form>

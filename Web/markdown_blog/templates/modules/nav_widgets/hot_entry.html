@@ -1,0 +1,12 @@
+<div class="sidebar_block">
+    <div class="header clearfix">
+        <h3>热文排行</h3>
+    </div>
+    <ul class="content nav nav-lilst">
+    {% for entry in Entry.all().filter('status =', STATUS['active']).order('-pv').fetch(5) %}
+        <li>
+            <a href="/entry/{{ entry.slug }}"><i class="icon-fire"></i>{{ entry.title }}</a>
+        </li>
+    {% end %}
+    </ul>
+</div>
