@@ -8,6 +8,7 @@ import time, os
 
 Base = declarative_base()
 Session = sessionmaker()
+default_session = None
 
 __default_engine__ = None
 __register_models__ = {}
@@ -18,6 +19,7 @@ def config(dialect, is_debug=False):
     global default_engine
     default_engine = create_engine(dialect, echo=is_debug)
     Session.configure(bind=default_engine)
+    default_session = Session()
 
 # 定义完若干models后调用, 创建数据库
 def create_all():
@@ -48,6 +50,9 @@ class AccountModel(Base):
     expiry = Column(Integer)
     # 首次登录时间.
     insert_date = Column(Date)
+
+    def __repr__(self):
+        return self.uid
 
     __columns_format__ = OrderedDict([
         ('uid', {'verbose_name': 'UID', 'type': 'hidden',}),

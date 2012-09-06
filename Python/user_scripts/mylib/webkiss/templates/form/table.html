@@ -1,0 +1,20 @@
+{% from webkiss.view import join, fill %}
+<table class="{{ join('table', table_class) }}"{% raw fill(attrs) %}>
+    {% if caption!=None %}
+    <caption>{{ caption }}</caption>
+    {% end %}
+    {% if headers %}
+    <thead>
+        <tr>
+            {% for header in headers %}
+            <th>{{ header }}</th>
+            {% end %}
+        </tr>
+    </thead>
+    {% end %}
+    <tbody>
+    {% for column in columns %}
+    {% raw column.tr() %}
+    {% end %}
+    </tbody>
+</table>

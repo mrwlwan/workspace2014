@@ -1,0 +1,48 @@
+{% from webkiss.view import t, fill, join, attr %}
+
+{% if column_format.get('choices') %}
+    {% set choice_items = column_format.get('choices').items() %}
+{% elif column_format.get('foreign_key') and column_format.get('foreign_model') %}
+    {% from webkiss.db import get_model, default_session %}
+    {% set __foreign_model__ = get_model(column_format.get('foreign_model')) %}
+    {% set choice_items = default_session.query(getattr(__foreign_model__, column_format.get('foreign_key')), __foreign_model__).all() %}
+{% else %}
+    {% set choice_items = [] %}
+{% end %}
+
+{% if column_format.get('mutiple') %}
+    {% try %}
+        {% import json %}
+    {% except %}
+        {% import simplejson as json %}
+    {% end %}
+    {% set select_values = set(json.loads(column_value)) %}
+{% else %}
+    {% set select_values = set([column_value]) %}
+{% end %}
+
+{% set form_type = column_format.get('form_type', 'vertical') %}
+{% if form_type == 'horizontal' %}
+<div class="{{ join('control-group', column_format.get('validate_class')) }}">
+{% end %}
+    {% if form_type != 'inline' and column_format.get('type')!='hidden' %}
+    <label class="{{ join(t(form_type=='horizontal' and 'control-label'), column_format.get('label_class')) }} " for="{{ column_name }}">{{ column_format.get('verbose_name', column_name) }}</label>
+    {% end %}
+    {% if form_type == 'horizontal' %}
+    <div class="controls">
+    {% end %}
+        <select name="{{ column_name }}" class="{{ join(t(form_type=='inline' and 'input-small'), column_format.get('class')) }}"{% raw attr('mutiple', column_format.get('mutiple') and 'mutiple') %}{% raw fill(column_format.get('attrs')) %}>
+            {% if column_format.get('nullable', True) %}
+            <option value=""></option>
+            {% end %}
+            {% for choice_key, choice_value in choice_items %}
+            <option value="{{ choice_key }}"{% raw attr('selected', choice_key in select_values else and 'selected') %}>{{ choice_value }}</option>
+            {% end %}
+        </select>
+        {% if form_type != 'inline' and 'help_text' in column_format %}
+        <span class="{{ column_format.get('help_class', 'help-block') }}">{{ column_format.get('help_text') }}</span>
+        {% end %}
+{% if form_type == 'horizontal' %}
+    </div>
+</div>
+{% end %}

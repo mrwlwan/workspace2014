@@ -53,8 +53,16 @@
         <!-- 主要内容显示区 -->
         <div id="main_content" class="span8">
             {% block content %}
-            {# raw ColumnView('name', dict(type='text'), 'test').input() #}
-            {% raw ModelView(AccountModel).column('code').input() %}
+            {% raw ModelView(AccountModel, global_format={
+                'form_type': 'horizontal'
+            }, columns_format={
+                'code': {
+                    'help_text': 'abc', 'help_class': 'help-inline','placeholder':'text'
+                }, 'test_box': {
+                    'type': 'checkbox',
+                    'choices': {1: '1a'}
+                }}).form('/', xsrf_form_html) %}
+                {% raw ModelView(AccountModel, columns_format={'code': {'href': 'abc{0}'}}).table(caption='test table', headers=['label', 'value']) %}
             {% end %}
         </div>
         <!-- 侧边栏. -->

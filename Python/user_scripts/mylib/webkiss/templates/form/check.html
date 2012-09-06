@@ -1,0 +1,24 @@
+{% from webkiss.view import t, fill, join %}
+{% set form_type = column_format.get('form_type', 'vertical') %}
+{% set check_type = column_format.get('type') %}
+{% if form_type == 'horizontal' %}
+<div class="{{ join('control-group', column_format.get('validate_class')) }}">
+{% end %}
+    {% if form_type != 'inline' %}
+    <label class="{{ join(t(form_type=='horizontal' and 'control-label'), column_format.get('label_class'))}} " for="{{ column_name }}">{{ column_format.get('verbose_name', column_name) }}</label>
+    {% end %}
+    {% if form_type == 'horizontal' %}
+    <div class="controls">
+    {% end %}
+        {% for choice_key, choice_value in column_format.get('choices').items() %}
+        <label class="{{ join(check_type, column_format.get('class')) }}">
+            <input type="{{ check_type }}" name="{{ column_name }}"{% raw fill(column_format.get('attrs')) %} value="{{ choice_key }}"{% raw (column_value and column_value == choice_key) and ' checked=""' or '' %}>{{ choice_value }}
+        </label>
+        {% end %}
+        {% if form_type != 'inline' and 'help_text' in column_format %}
+        <span class="{{ column_format.get('help_class', 'help-block') }}">{{ column_format.get('help_text') }}</span>
+        {% end %}
+{% if form_type == 'horizontal' %}
+    </div>
+</div>
+{% end %}

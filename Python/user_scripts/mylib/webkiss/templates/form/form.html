@@ -1,0 +1,25 @@
+{% from webkiss.view import join, fill, attr %}
+{% set is_horizontal = form_class.find('form-horizontal')>=0 %}
+<form class="{{ form_class }}" action="{{ action }}" method="{{ method }}"{% raw fill(attrs) %}>
+    {% raw xsrf_form_html() %}
+    {% for column in columns %}
+    {% raw column %}
+    {% end %}
+    {% if is_horizontal %}
+    <div class="form-actions">
+    {% end %}
+        {% if default_btns %}
+        {% for btn in default_btns %}
+        <button class="{{ join('btn', btn.get('class')) }}"{{ attr('type', btn.get('type')) }}>{{ btn.get('verbose_name') }}</button>
+        {% end %}
+        {% else %}
+        <button class="btn btn-primary" type="submit">提交</button>
+        <button class="btn" type="reset">重置</button>
+        {% end %}
+        {% for btn in btns %}
+        <a class="{{ join('btn', btn.get('class')) }}"{{ fill(btn.get('attrs')) }} href="{{  t(btn.get('href')) }}">{{ btn.get('verbose_name') }}</a>
+        {% end %}
+    {% if is_horizontal %}
+    </div>
+    {% end %}
+</form>

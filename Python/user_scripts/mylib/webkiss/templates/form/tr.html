@@ -1,0 +1,22 @@
+{% from webkiss.view import t, fill, join, attr %}
+
+{% if column_format.get('choices') %}
+    {% set td_value = column_format.get('choices').get(column_value) %}
+{% elif column_format.get('foreign_key') and column_format.get('foreign_model') %}
+    {% from webkiss.db import get_model, default_session %}
+    {% set __foreign_model__ = get_model(column_format.get('foreign_model')) %}
+    {% set td_value = default_session.query(__foreign_model__).filter(getattr(__foreign_model__, column_format.get('foreign_key'))==column_value).first() %}
+{% else %}
+    {% set td_value = column_value %}
+{% end %}
+
+<tr{% raw attr('class', column_format.get('tr_class')) %}{{ fill(column_format.get('attrs')) }}>
+    <td>{{ column_format.get('verbose_name') or column_name }}</td>
+    <td>
+        {% if 'href' in column_format %}
+        <a href="{{ column_format.get('href').format(column_value, td_value) }}">{{ td_value }}</a>
+        {% else %}
+        {{ td_value }}
+        {% end %}
+    </td>
+</tr>

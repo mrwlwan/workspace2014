@@ -1,17 +1,19 @@
-{% from webkiss.view import get_dict, get_dict_space, get_dict_left_space %}
-{% if column_format.get('form_type') == 'horizontal' %}
-<div class="control-group">
-    <label class="control-label" for="{{ column_name }}">{{ get_dict(column_format, 'verbose_name', column_name) }}</label>
+{% from webkiss.view import t, fill, join, attr %}
+{% set form_type = column_format.get('form_type', 'vertical') %}
+{% if form_type == 'horizontal' %}
+<div class="{{ join('control-group', column_format.get('validate_class')) }}">
+{% end %}
+    {% if form_type != 'inline' and column_format.get('type')!='hidden' %}
+    <label class="{{ join(t(form_type=='horizontal' and 'control-label'), column_format.get('label_class')) }} " for="{{ column_name }}">{{ column_format.get('verbose_name', column_name) }}</label>
+    {% end %}
+    {% if form_type == 'horizontal' %}
     <div class="controls">
-        <input name="{{ column_name }}" class="{{ get_dict(column_format, 'class') }}" placeholder="{{ get_dict(column_format, 'placeholder') }}"{% raw get_dict_left_space(column_format, 'attrs') %} value="{{ column_value or '' }}">
-        {% if 'help_text' in column_format %}
-        <span class="help-block">{{ column_format.get('help_text') }}</span>
+    {% end %}
+    <input type="{{ column_format.get('type') }}" name="{{ column_name }}" class="{{ join(t(form_type=='inline' and 'input-small'), column_format.get('class')) }}"{% raw attr('placeholder', column_format.get('placeholder')) %}{% raw fill(column_format.get('attrs')) %} value="{{ t(column_value) }}">
+        {% if form_type != 'inline' and 'help_text' in column_format %}
+        <span class="{{ column_format.get('help_class', 'help-block') }}">{{ column_format.get('help_text') }}</span>
         {% end %}
+{% if form_type == 'horizontal' %}
     </div>
 </div>
-{% elif column_format.get('form_type') == 'inline' %}
-<input name="{{ column_name }}" class="{{ get_dict_space(column_format, 'class', 'input-small') }}" placeholder="{{ get_dict(column_format, 'placeholder') }}"{% raw get_dict_left_space(column_format, 'attrs') %} value="{{ column_value or '' }}">
-{% else %}
-<label for="{{ column_name }}">{{ get_dict(column_format, 'verbose_name', column_name) }}</label>
-<input name="{{ column_name }}" class="{{ get_dict(column_format, 'class') }}" placeholder="{{ get_dict(column_format, 'placeholder') }}"{% raw get_dict_left_space(column_format, 'attrs') %} value="{{ column_value or '' }}">
 {% end %}
