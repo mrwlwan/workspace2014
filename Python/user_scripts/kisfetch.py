@@ -103,7 +103,10 @@ class Action:
                 args = self.arg_parser.parse_args()
             else:
                 args = self.arg_parser.parse_args(argv)
+<<<<<<< HEAD
             print(args)
+=======
+>>>>>>> 4e96ec48729e788568237a77415bebd1ee5a9fa6
             #args = self.arg_parser.parse_args(argv)
             # 处理cookie 文件.
             if args.cookiefile:
