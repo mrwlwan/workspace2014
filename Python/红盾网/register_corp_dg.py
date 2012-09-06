@@ -1,4 +1,3 @@
-#! urs/bin/python3
 # coding=utf8
 
 from opener import Opener

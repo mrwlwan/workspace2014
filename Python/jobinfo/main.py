@@ -1,4 +1,3 @@
-#!usr/bin/python3
 # coding=utf8
 
 from lib.job5156_corp import Job5156Corp
@@ -12,6 +11,7 @@ from lib.zjrc_corp import ZJRCCorp
 from lib.job168_corp import Job168Corp
 from lib.jobefhr_corp import JobefhrCorp
 from lib.tzrc_corp import TZRCCorp
+from lib.qlrc_corp import QLRCCorp
 from lib.zjrc_corp2 import ZJRCCorp as ZJRCCorp2
 from lib.job168_corp2 import Job168Corp as Job168Corp2
 from funcs import shortcut_input
@@ -28,6 +28,7 @@ CORPCLASSES = (
     #{'title': '浙江人才网', 'class': ZJRCCorp},
     {'title': '南方人才网', 'class': Job168Corp},
     {'title': '台州人才网', 'class': TZRCCorp},
+    {'title': '齐鲁人才网', 'class': QLRCCorp},
     #{'title': '服装人才网', 'class': JobefhrCorp},
     #{'title': '浙江人才网2', 'class': ZJRCCorp2},
     #{'title': '南方人才网2', 'class': Job168Corp2},
