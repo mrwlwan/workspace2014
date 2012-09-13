@@ -6,6 +6,10 @@ class Cmd(cmd.Cmd):
     intro = 'Welcome...'
     prompt = '> '
 
+    def _get_command_func(self, command):
+        """ 返回 command 对应的方法. """
+        return getattr(self, 'do_%s' % command, None)
+
     def _get_commands(self):
         """ 返回可用的命令字典. 默认是以 "do_" 开关的方法. """
         return collections.OrderedDict(sorted(((i[3:], j) for i, j in inspect.getmembers(self) if i.startswith('do_'))))
@@ -18,7 +22,7 @@ class Cmd(cmd.Cmd):
             @param tab(int): width 为 None 时, 显示的命令名后追加的空格数.
         """
         if not func:
-            func = getattr(self, 'do_%s' % command)
+            func = self._get_command_func(command)
         if width==None:
             width = len(command) + tab
         doc = func.__doc__ and func.__doc__.strip()
@@ -32,7 +36,7 @@ class Cmd(cmd.Cmd):
         else:
             doc = '没找到帮助信息.'
 
-        return '{command:<{width}}{doc}\n'.format(command=command, width=width, doc=doc)
+        return '{command:<{width}}{doc}'.format(command=command, width=width, doc=doc)
 
     def parse_line(self, line, first=False, **kwargs):
         """ 解析命令行参数, 返回一个类似于 argv 的 list对象.
@@ -48,16 +52,28 @@ class Cmd(cmd.Cmd):
         if not target_command:
             print('可用的命令(查看指定的命令: help 命令名):')
             print('='*40)
-            print('\n命令描述:')
-            print('='*9)
             commands = self._get_commands()
-            width = max((len(command) for command in commands.keys())) + 4
-            for command, func in commands.items():
-                print(self._command_help(command, func, width=width))
-        else:
-            print('\n命令描述:')
+            print('    '.join(commands.keys()))
+            print('\n')
+            print('命令描述:')
             print('='*9)
-            print(self._command_help(command))
+            width = max((len(command) for command in commands.keys())) + 4
+            print('\n'.join((self._command_help(command, func, width=width) for command, func in commands.items())))
+        elif self._get_command_func(target_command):
+            print('命令描述:')
+            print('='*9)
+            print(self._command_help(target_command))
+        else:
+            print('不支持的命令: %s' % target_command)
+
+    def default(self, line):
+        """ 显示不支持命令的信息. """
+        print('不支持的命令')
+
+    def postcmd(self, stop, line):
+        """ 在显示的信息后面追加回车符. """
+        stop != 0 and print('\n')
+        return stop
 
     def do_exit(self, line):
         """ 退出命令行. """
@@ -69,4 +85,4 @@ class Cmd(cmd.Cmd):
 
     def emptyline(self):
         """ 空命令处理. """
-        pass
+        return 0
