@@ -59,10 +59,12 @@ class Cmd(cmd.Cmd):
             print('='*9)
             width = max((len(command) for command in commands.keys())) + 4
             print('\n'.join((self._command_help(command, func, width=width) for command, func in commands.items())))
+            print('\n')
         elif self._get_command_func(target_command):
             print('命令描述:')
             print('='*9)
             print(self._command_help(target_command))
+            print('\n')
         else:
             print('不支持的命令: %s' % target_command)
 
@@ -70,10 +72,10 @@ class Cmd(cmd.Cmd):
         """ 显示不支持命令的信息. """
         print('不支持的命令')
 
-    def postcmd(self, stop, line):
-        """ 在显示的信息后面追加回车符. """
-        stop != 0 and print('\n')
-        return stop
+    #def postcmd(self, stop, line):
+        #""" 在显示的信息后面追加回车符. """
+        #stop != 0 and print('\n')
+        #return stop
 
     def do_exit(self, line):
         """ 退出命令行. """
