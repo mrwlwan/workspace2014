@@ -56,6 +56,13 @@ class Cmd(cmd.Cmd):
         else:
             return [self._str_or_json(arg) for arg in argv] if json else argv
 
+    def print(self, *args, **kwargs):
+        """ 显示文本. """
+        try:
+            print(*args, **kwargs)
+        except:
+            print(*[item.__str__().encode('gbk', 'ignore').decode('gbk', 'ignore') for item in args], **kwargs)
+
     def do_help(self, line):
         """ 显示命令行帮助信息. "help 命令名" 可显示指定命令的帮助信息."""
         target_command = self.parse_line(line, first=True)
