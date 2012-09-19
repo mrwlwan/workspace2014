@@ -1,6 +1,6 @@
 # coding=utf8
 
-import cmd, inspect, shlex, collections, re
+import cmd, inspect, shlex, collections, re, json
 
 class Cmd(cmd.Cmd):
     intro = 'Welcome...'
@@ -38,13 +38,23 @@ class Cmd(cmd.Cmd):
 
         return '{command:<{width}}{doc}'.format(command=command, width=width, doc=doc)
 
-    def parse_line(self, line, first=False, **kwargs):
+    def _str_or_json(self, arg):
+        """ 返回字符串或者json对象. """
+        if (arg.startswith('[') and arg.endswith(']')) or (arg.startswith('{') and arg.endswith('}')):
+            return json.loads(arg)
+        return arg
+
+    def parse_line(self, line, first=False, json=False, **kwargs):
         """ 解析命令行参数, 返回一个类似于 argv 的 list对象.
             如果指定 first 为真值, 则只返回第一个参数字符串.
             kwargs 可指定 shelx.split 的参数.
         """
         argv = shlex.split(line, **kwargs)
-        return (argv[0] if argv else '') if first else argv
+        if first:
+            arg = argv[0] if argv else ''
+            return self._str_or_json(arg) if json else arg
+        else:
+            return [self._str_or_json(arg) for arg in argv] if json else argv
 
     def do_help(self, line):
         """ 显示命令行帮助信息. "help 命令名" 可显示指定命令的帮助信息."""
