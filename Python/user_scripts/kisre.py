@@ -46,8 +46,8 @@ class ReCmd(kiscmd.Cmd):
             self.print(self._slice(*argv))
 
     def do_set(self, line):
-        """ 设置当前内容. """
-        content = self.parse_line(line, is_first=True, is_eval=True)
+        """ 设置当前内容. line 包含在双引号下, 会对字符串进行 escape. """
+        content = self.parse_line(line, is_first=True, is_eval=line.startswith('"'))
         self.contents.appendleft(content)
 
     def do_sliceset(self, line):
@@ -123,7 +123,7 @@ class ReCmd(kiscmd.Cmd):
 
     def do_test(self, line):
         print(line)
-        first = self.parse_line(line, is_eval=True, is_first=True)
+        first = self.parse_line(line, is_eval=line.startswith('"'), is_first=True)
         print(first)
 
 
