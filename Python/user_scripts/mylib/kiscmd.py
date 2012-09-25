@@ -6,6 +6,9 @@ class Cmd(cmd.Cmd):
     intro = 'Welcome...'
     prompt = '> '
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def _get_command_func(self, command):
         """ 返回 command 对应的方法. """
         return getattr(self, 'do_%s' % command, None)
@@ -44,17 +47,31 @@ class Cmd(cmd.Cmd):
             return json.loads(arg)
         return arg
 
-    def parse_line(self, line, first=False, json=False, **kwargs):
+    def _eval(self, text, *args, **kwargs):
+        text = text.replace('"', '\\"')
+        return eval('str("%s")' % text, *args, **kwargs)
+
+    def parse_line(self, line, is_first=False, is_eval=False, is_json=False, **kwargs):
         """ 解析命令行参数, 返回一个类似于 argv 的 list对象.
             如果指定 first 为真值, 则只返回第一个参数字符串.
+            line 中若要含有控制字符, 或者双引号, line 字符串必须包含在双引号中.
             kwargs 可指定 shelx.split 的参数.
         """
         argv = shlex.split(line, **kwargs)
-        if first:
+        #print(argv)
+        if is_first:
             arg = argv[0] if argv else ''
-            return self._str_or_json(arg) if json else arg
+            if is_eval:
+                arg = self._eval(arg)
+            if is_json:
+                arg = self._str_or_json(arg)
+            return arg
         else:
-            return [self._str_or_json(arg) for arg in argv] if json else argv
+            if is_eval:
+                argv = [self._eval(arg) for arg in argv]
+            if is_json:
+                argv = [self._str_or_json(arg) for arg in argv]
+            return argv
 
     def print(self, *args, **kwargs):
         """ 显示文本. """

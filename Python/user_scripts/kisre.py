@@ -2,7 +2,7 @@
 
 import kiscmd
 import colorama
-import re, collections
+import re, collections, difflib
 from urllib.parse import urlparse
 
 class ReCmd(kiscmd.Cmd):
@@ -47,24 +47,24 @@ class ReCmd(kiscmd.Cmd):
 
     def do_set(self, line):
         """ 设置当前内容. """
-        content = self.parse_line(line, first=True)
+        content = self.parse_line(line, is_first=True, is_eval=True)
         self.contents.appendleft(content)
 
     def do_sliceset(self, line):
-        """ 将子字符串设置为当前内容. """
+        """ sliceset start [end]. 将子字符串设置为当前内容. """
         argv = self.parse_line(line)
         if argv:
             self.contents.appendleft(self._slice(*argv))
 
     def do_remove(self, line):
         """ remove index. 删除 index 位置上的内容. """
-        index = self.parse_line(line, first=True)
+        index = self.parse_line(line, is_first=True)
         if index:
             del self.contents[int(index)]
 
     def do_popup(self, line):
         """ popup index. 将 index 位置上的内容设置为当前内容. """
-        index = self.parse_line(line, first=True)
+        index = self.parse_line(line, is_first=True)
         if index:
             index = int(index)
             content = self.contents[index]
@@ -73,7 +73,7 @@ class ReCmd(kiscmd.Cmd):
 
     def do_list(self, line):
         """ lilst [full]. 显示 contents 列表. 设置参数 full 则显示 content 的全部内容, 否则只显示前面的80个字符. """
-        arg = self.parse_line(line, first=True)
+        arg = self.parse_line(line, is_first=True)
         if arg=='full':
             for item in enumerate(self.contents):
                 self.print('%s. %s' % (item))
@@ -82,8 +82,8 @@ class ReCmd(kiscmd.Cmd):
                 self.print('%s. %s' % (index, content[0:80]))
 
     def do_fetch(self, line):
-        """ fetch url [param data...]. 抓取网页内容为当前内容. 注意: 其后一般需要运行命令 encode, 将内容转为 unicode. """
-        argv = self.parse_line(line, json=True)
+        """ fetch url [param data ...]. 抓取网页内容为当前内容. 注意: 其后一般需要运行命令 encode, 将内容转为 unicode. """
+        argv = self.parse_line(line, is_json=True)
         if argv:
             url = argv[0]
             if not urlparse(url).scheme:
@@ -103,6 +103,28 @@ class ReCmd(kiscmd.Cmd):
             self.contents.appendleft(self.contents.popleft().decode(*codec))
         except:
             print('编码错误!')
+
+    def do_cmp(self, line):
+        """ cmp index. 将 index 位置上的内容于当前内容作比较. """
+        index = self.parse_line(line, is_first=True)
+        if index:
+            index = int(index)
+            diff_lines = difflib.unified_diff(self.contents[index].splitlines(True), self.content.splitlines(True), fromfile='内容%s' % index, tofile='当前内容')
+            print(next(diff_lines))
+            print(next(diff_lines))
+            print(next(diff_lines))
+            for diff_line in diff_lines:
+                if diff_line.startswith('-'):
+                    print('%s%s' % (colorama.Fore.RED, diff_line))
+                elif diff_line.startswith('+'):
+                    print('%s%s' % (colorama.Fore.GREEN, diff_line))
+                else:
+                    print(diff_line)
+
+    def do_test(self, line):
+        print(line)
+        first = self.parse_line(line, is_eval=True, is_first=True)
+        print(first)
 
 
 if __name__ == '__main__':
