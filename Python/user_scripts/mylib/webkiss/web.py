@@ -36,7 +36,7 @@ class BaseHandler(RequestHandler):
         """ 重写. 取得当前用户. 返回 None 或者 Account 对象. """
         uid = self.get_secure_cookie('sessionid')
         #return uid and Account(uid)
-        return uid and self.query(AccountModel).get(uid)
+        return uid and self.models.query(AccountModel).get(uid)
 
     def get_login_url(self):
         """ 重写. 取得登录地址. """

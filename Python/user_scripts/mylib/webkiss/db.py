@@ -16,16 +16,16 @@ __register_models__ = {}
 # 必须显式调用此方法来设置数据库
 def config(dialect, is_debug=False):
     global Session
-    global default_engine
-    default_engine = create_engine(dialect, echo=is_debug)
-    Session.configure(bind=default_engine)
+    global __default_engine__
+    __default_engine__ = create_engine(dialect, echo=is_debug)
+    Session.configure(bind=__default_engine__)
     default_session = Session()
 
 # 定义完若干models后调用, 创建数据库
 def create_all():
-    global default_engine
-    if default_engine:
-        Base.metadata.create_all(default_engine)
+    global __default_engine__
+    if __default_engine__:
+        Base.metadata.create_all(__default_engine__)
 
 # 注册 model, 定义完一个model 类后调用.
 def register(model):
@@ -68,6 +68,6 @@ class AccountModel(Base):
 
     def get_token(self):
         """ 尽量用此方法取得access_token. """
-        return None if self.is_expiries else self.expiry
+        return None if self.is_expiries else self.access_token
 
 register(AccountModel)

@@ -1,0 +1,9 @@
+#LWP-Cookies-2.0
+Set-Cookie3: KCdD_2132_auth="cc0cLKjxE1%2FYlO5f7COHKFvJnQUaDynBRbDwFUW5%2BJl865x8XP6u%2Bj0YWFZiXihCDxBCFwVLrzCnjt41bVRcdwY"; path="/"; domain="www.rongame.com"; path_spec; expires="2012-12-19 15:12:40Z"; httponly=None; version=0
+Set-Cookie3: KCdD_2132_connect_is_bind=0; path="/"; domain="www.rongame.com"; path_spec; expires="2013-11-19 15:13:04Z"; version=0
+Set-Cookie3: KCdD_2132_lastact="1353337984%09home.php%09space"; path="/"; domain="www.rongame.com"; path_spec; expires="2012-11-20 15:13:04Z"; version=0
+Set-Cookie3: KCdD_2132_lastcheckfeed="143%7C1353337960"; path="/"; domain="www.rongame.com"; path_spec; expires="2013-11-19 15:12:40Z"; version=0
+Set-Cookie3: KCdD_2132_lastvisit=1353334360; path="/"; domain="www.rongame.com"; path_spec; expires="2012-12-19 15:12:40Z"; version=0
+Set-Cookie3: KCdD_2132_saltkey=T768A8Xh; path="/"; domain="www.rongame.com"; path_spec; expires="2012-12-19 15:12:40Z"; httponly=None; version=0
+Set-Cookie3: KCdD_2132_sid=bvhW4w; path="/"; domain="www.rongame.com"; path_spec; expires="2012-11-20 15:13:04Z"; version=0
+Set-Cookie3: KCdD_2132_ulastactivity=7069TPEwlEQEf0k289RJG32ksjQ3E5M1wwZRhMv0U5QwIsa3QYJ0; path="/"; domain="www.rongame.com"; path_spec; expires="2013-11-19 15:12:40Z"; version=0
