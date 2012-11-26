@@ -1,5 +1,6 @@
 # coding=utf8
 
+from lib.corp import Commiter, Corp
 from lib.job5156_corp import Job5156Corp
 from lib.jobcn_corp import JobcnCorp
 from lib.job51_corp import Job51Corp
@@ -16,7 +17,7 @@ from lib.jobxmrc_corp import JobXmrcCorp
 from lib.zjrc_corp2 import ZJRCCorp as ZJRCCorp2
 from lib.job168_corp2 import Job168Corp as Job168Corp2
 from funcs import shortcut_input
-import sys
+import sys, multiprocessing, time
 
 CORPCLASSES = (
     {'title': 'Job5156', 'class': Job5156Corp},
@@ -37,23 +38,31 @@ CORPCLASSES = (
 )
 
 OPERATIONS = (
-    {'title': '抓取信息', 'method': 'action'},
+    {'title': '抓取信息', 'method': 'start'},
     {'title': '生成报告', 'method': 'report'},
 )
 
-CACHES = {}
 
 if __name__ == '__main__':
     while 1:
-        class_index = shortcut_input(CORPCLASSES, title='title', input_msg='请选择目标: ')
-        if class_index < 0:
-            sys.exit()
-        title = CORPCLASSES[class_index]['title']
-        title in CACHES or CACHES.update({title: CORPCLASSES[class_index]['class']()})
-        corp = CACHES[title]
         method_index = shortcut_input(OPERATIONS, title='title', input_msg='请选择操作: ')
         if method_index < 0:
             continue
-        getattr(corp, OPERATIONS[method_index]['method'])()
-        del CACHES[title]
-
+        method = OPERATIONS[method_index]['method']
+        class_indexes = shortcut_input(CORPCLASSES, title='title', input_msg='请选择目标: ', multi=True)
+        if len(class_indexes) <= 0:
+            sys.exit()
+        queue = multiprocessing.Queue()
+        processes = []
+        for class_index in class_indexes:
+            title = CORPCLASSES[class_index]['title']
+            corp = CORPCLASSES[class_index]['class']()
+            processes.append(corp)
+            corp.set_queue(queue)
+            getattr(corp, method)()
+        if method == 'start':
+            commiter = Commiter(queue=queue, db_lock=None, process_num=len(processes))
+            commiter.start()
+            commiter.join()
+            for process in processes:
+                process.join()

@@ -17,18 +17,15 @@ def coroutine(func):
         return g
     return call
 
-def shortcut_input(items, title='title', input_msg='请选择: '):
+def shortcut_input(items, title='title', input_msg='请选择: ', multi=False):
     """ 便捷的 input. """
-    #for index in range(1, len(items)+1):
-        #print('%s. %s' % (index, items[index-1][title]))
     for index, item in enumerate(items, 1):
         print('%s. %s' % (index, item[title]))
     input_index = input(input_msg)
-    try:
-        input_index = int(input_index.strip()) - 1
-    except:
-        input_index = -1
-    return input_index if 0<=input_index<len(items) else -1
+    input_indexes = [int(i)-1 for i in input_index.strip().split()]
+    if multi:
+        return input_indexes
+    return input_indexes[0] if input_indexes else None
 
 def get_cst():
     from opener import Opener

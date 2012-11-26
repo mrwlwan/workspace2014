@@ -3,11 +3,14 @@
 from opener import Opener
 from funcs import coroutine
 from funcs import get_cst
-import logging, time, datetime, itertools
+import logging, time, datetime, itertools, multiprocessing
 
-class Corp():
+logging.basicConfig(format='[%(asctime)s] %(message)s')
+
+class Corp(multiprocessing.Process):
     def __init__(self, corplist_url, corp_url, info_from, corplist_post_data=None, corp_post_data=None, corplist_reg=None, corp_regs=[], timeout=5, commit_each_times=30, has_cookie=True, charset='utf8', model=None):
         """ 参数 corplist_url 和 corp_url 取胜字符串的高级格式化:format, 使用{0},{1}等通配符; """
+        super().__init__()
         self.charset = charset
         self.info_from = info_from
         self.corplist_url = corplist_url
@@ -31,7 +34,12 @@ class Corp():
         self._today = datetime.date.today()
 
     def _msg(self, msg=''):
-        print('%s %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), msg))
+        #print('%s %s' % (time.strftime('%Y-%m-%d %H:%M:%S'), msg))
+        logging.info(msg)
+
+    def set_queue(self, queue):
+        self.queue = queue
+
 
     def process_corp_info(self, corp_info, date_reg=r'(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)'):
         for key, values in corp_info.items():
@@ -71,9 +79,6 @@ class Corp():
         corp_info['info_from'] = self.info_from
         return corp_info
 
-    def save(self, corp_info):
-        self.model.add(corp_info, is_commit=False)
-
     def commit(self):
         self.model.commit()
 
@@ -89,7 +94,7 @@ class Corp():
             result = None
             corp_name = corp_info['name'].strip()
             if corp_name not in corp_names_cache:
-                corp_names_cache[corp_name] = True
+                corp_names_cache[corp_name] = self.info_from
                 corp_names_cache_list.insert(0,corp_name)
                 cache_length += 1
                 if cache_length > self.commit_each_times:
@@ -98,13 +103,13 @@ class Corp():
                 exists_corp = self.model.filter_by(name=corp_name).first()
                 if exists_corp:
                     result = exists_corp.info_from
+                    corp_names_cache[corp_name] = result
             else:
-                result = self.info_from
+                result = corp_names_cache[corp_name]
 
-    def action(self):
+    def run(self):
         self.prepare()
-        fetch_corp_times = 0
-        check_exists =self.check_exists()
+        check_exists = self.check_exists()
         cur_page = itertools.count()
         for page_url in self.get_next_page_url():
             print('\n%s 第%s页' % (self.info_from, next(cur_page)+1))
@@ -115,17 +120,11 @@ class Corp():
                 if not info_from:
                     corp_info = self.fetch_corp(corp_info)
                     corp_info = self.before_save(corp_info)
-                    self.save(corp_info)
-                    self._msg('保存成功!')
-                    fetch_corp_times = (fetch_corp_times + 1) % self.commit_each_times
+                    self.queue.put(corp_info)
                 else:
                     print('已经存在于: %s' % info_from)
-                if fetch_corp_times:
-                    continue
-                else:
-                    self.commit()
-        self.commit()
-        self._msg('\n抓取完毕!')
+        self._msg('\n%s 抓取完毕!' % self.info_from)
+        self.queue.put(None)
 
     def report(self, fields=None):
         corps = self.model.filter_by(info_from=self.info_from, insert_date=datetime.date.today())
@@ -143,3 +142,49 @@ class Corp():
             ('链接', self.corp_url),
         )
         self.model.report('%s最新公司信息_%s.csv' % (self.info_from, time.strftime('%Y-%m-%d')), fields=fields, rows=corps, encoder='gbk')
+
+
+
+class Commiter(multiprocessing.Process):
+    """ 查询或者插入数据. """
+    def __init__(self, queue, db_lock, process_num, model=None, commit_each_times=30):
+        super().__init__()
+        if model:
+            self.model = model
+        else:
+            from lib.models import CorpModel
+            self.model = CorpModel
+        self.queue = queue
+        self.db_lock = db_lock
+        self.process_num = process_num
+        self._over_times = 0
+        self._cache = set()
+        self._add_times = 0
+        self.commit_each_times = commit_each_times
+
+    def is_over(self):
+        """ 所有processes全结束才返回true. """
+        return self._over_times>=self.process_num
+
+    def save(self, corp_info):
+        corp_name = corp_info.get('name').strip()
+        if corp_name in self._cache:
+            return
+        #with self.db_lock:
+        self.model.add(corp_info, is_commit=False)
+        self._cache.add(corp_name)
+        self._add_times += 1
+        if self._add_times % self.commit_each_times == 0:
+            self.model.commit()
+
+    def run(self):
+        while 1:
+            corp_info = self.queue.get()
+            if corp_info is None:
+                self._over_times += 1
+                if self.is_over():
+                    """ 当接受到None数据, 并且所有processes结束, 此process才结束. """
+                    self.model.commit()
+                    return 0
+                continue
+            self.save(corp_info)
