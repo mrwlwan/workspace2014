@@ -4,6 +4,7 @@ from lib.corp import Commiter, Corp
 from lib.job5156_corp import Job5156Corp
 from lib.jobcn_corp import JobcnCorp
 from lib.job51_corp import Job51Corp
+from lib.job51_logo_corp import Job51LogoCorp
 from lib.job58_corp import Job58Corp
 from lib.job577_corp import Job577Corp
 from lib.jobcfw_corp import JobcfwCorp
@@ -21,7 +22,8 @@ import sys, multiprocessing, time
 
 CORPCLASSES = (
     {'title': 'Job5156', 'class': Job5156Corp},
-    {'title': '51Job', 'class': Job51Corp},
+    #{'title': '51Job', 'class': Job51Corp},
+    {'title': '51JobLogo', 'class': Job51LogoCorp},
     {'title': 'Jobcn', 'class': JobcnCorp},
     {'title': '南方人才网', 'class': Job168Corp},
     {'title': '厦门人才网', 'class': JobXmrcCorp},
