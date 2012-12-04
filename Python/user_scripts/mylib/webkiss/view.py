@@ -7,7 +7,7 @@ import os.path
 
 def t(value, default=''):
     """ 将value转换为字符串, None, False 值转换为 default 值. """
-    return default if (value==None or value==False) else str(value)
+    return default if (value is None or value==False) else str(value)
 
 def join(*args):
     """ 用空格连接多个字符串. 过滤元素值为None或者空字符串"""
