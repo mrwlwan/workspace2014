@@ -90,18 +90,20 @@ class Taobao:
             sys.exit()
 
     def action(self):
+        index_url = 'http://m.taobao.com'
         reg = re.compile(r'(?:点击抢红包|红包等你拿!)</a><center><a href="([^"]+)')
         url_reg = re.compile(r'http://msp\.m\.taobao\.com/awd/break\.htm\?sid[^"]+')
         url_reg2 = re.compile(r'(http://msp\.m\.taobao\.com/awd/award\.htm[^"]+)">\s*活动首页')
         msg_reg = re.compile(r'<div class="center">\s+<div class="detail center">\s+<[^>]+>\s*([^<]+)')
-        content = self.fetch('http://m.taobao.com')
+        content = self.fetch(index_url)
         url = self.clean(reg.search(content).group(1))
-        count =0
+        count = 0
+        error_count = 0
         while 1:
             try:
-                print('红包数: %s' % count)
+                print('红包: %s 出错: %s' % (count, error_count))
                 content = self.fetch(url)
-                time.sleep(4)
+                time.sleep(1)
                 if content.find('抓蝴蝶')<0:
                     return
                 data = self.form_dict(content)
@@ -110,11 +112,14 @@ class Taobao:
                 content = self.fetch(url, data=data)
                 url_obj = url_reg2.search(content)
                 if not url_obj:
-                    self.msg('单击太过频繁!')
-                    self.log(content)
-                    return
+                    self.msg('单击太过频繁! 1分钟后继续...')
+                    content = self.fetch(index_url)
+                    url = self.clean(reg.search(content).group(1))
+                    error_count += 1
+                    time.sleep(60)
+                    continue
                 url = self.clean(url_obj.group(1))
-                time.sleep(4)
+                #time.sleep(1)
                 msg_search = msg_reg.search(content, url_obj.end())
                 self.msg(msg_search.group(1).strip())
                 if content.find('再来一次', msg_search.end())<0:
@@ -124,9 +129,9 @@ class Taobao:
                 self.log(content)
                 return
                 self.msg(re.search(r'<span class="red">([^<]+)', content).group(1))
-                #count += 1
-                #if count >=3:
-                    #return
+                count += 1
+                if count >=3:
+                    return
 
 
     def log(self, text):
