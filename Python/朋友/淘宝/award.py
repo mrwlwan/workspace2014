@@ -101,7 +101,7 @@ class Taobao:
             try:
                 print('红包数: %s' % count)
                 content = self.fetch(url)
-                time.sleep(4)
+                time.sleep(5)
                 if content.find('抓蝴蝶')<0:
                     return
                 data = self.form_dict(content)
@@ -114,7 +114,7 @@ class Taobao:
                     self.log(content)
                     return
                 url = self.clean(url_obj.group(1))
-                time.sleep(4)
+                time.sleep(5)
                 msg_search = msg_reg.search(content, url_obj.end())
                 self.msg(msg_search.group(1).strip())
                 if content.find('再来一次', msg_search.end())<0:
