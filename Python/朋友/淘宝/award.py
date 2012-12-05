@@ -103,8 +103,10 @@ class Taobao:
             try:
                 print('红包: %s 出错: %s' % (count, error_count))
                 content = self.fetch(url)
-                time.sleep(1)
+                #time.sleep(1)
                 if content.find('抓蝴蝶')<0:
+                    self.msg('活动结束!')
+                    self.log(content)
                     return
                 data = self.form_dict(content)
                 data['event_submit_do_award'] = '抓蝴蝶'
@@ -122,12 +124,11 @@ class Taobao:
                 #time.sleep(1)
                 msg_search = msg_reg.search(content, url_obj.end())
                 self.msg(msg_search.group(1).strip())
-                if content.find('再来一次', msg_search.end())<0:
-                    self.msg('抢到红包')
+                #if content.find('再来一次', msg_search.end())<0:
+                    #self.msg('抢到红包')
             except:
                 traceback.print_exc()
                 self.log(content)
-                return
                 self.msg(re.search(r'<span class="red">([^<]+)', content).group(1))
                 count += 1
                 if count >=3:
@@ -143,7 +144,18 @@ class Taobao:
 
 
 if __name__ == '__main__':
-    username = input('请输入用户名: ')
+    users = [os.path.splitext(f)[0] for f in next(os.walk('cookies'))[2] if os.path.splitext(f)[1].strip()=='.txt']
+    if users:
+        for user_item in enumerate(users, 1):
+            print('%s. %s' % user_item)
+        index = input('请选择用户: ').strip()
+        if index.isdigit():
+            username = users[int(index)-1]
+        else:
+            username = index
+    else:
+        username = input('请输入用户名: ').strip()
     taobao = Taobao(username=username)
     taobao.login()
     taobao.action()
+
