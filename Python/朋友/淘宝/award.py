@@ -90,8 +90,10 @@ class Taobao:
             sys.exit()
 
     def action(self):
-        index_url = 'http://m.taobao.com'
-        reg = re.compile(r'(?:点击抢红包|红包等你拿!)</a><center><a href="([^"]+)')
+        #index_url = 'http://m.taobao.com'
+        #reg = re.compile(r'(?:点击抢红包|红包等你拿!)</a><center><a href="([^"]+)')
+        index_url = 'http://m.taobao.com/channel/act/wap/20121212.html'
+        reg = re.compile(r'<tbody><tr> <td colspan="1"><a href="([^"]+)')
         url_reg = re.compile(r'http://msp\.m\.taobao\.com/awd/break\.htm\?sid[^"]+')
         url_reg2 = re.compile(r'(http://msp\.m\.taobao\.com/awd/award\.htm[^"]+)">\s*活动首页')
         msg_reg = re.compile(r'<div class="center">\s+<div class="detail center">\s+<[^>]+>\s*([^<]+)')
