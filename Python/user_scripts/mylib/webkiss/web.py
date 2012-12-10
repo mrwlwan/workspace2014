@@ -1,7 +1,16 @@
 # coding=utf8
-
+from .utils import is_py3
 from tornado.web import RequestHandler
 from webkiss.db import AccountModel, Session
+
+if is_py3:
+    from collections import UserList
+    from itertools import zip_longest
+else:
+    from UserList import UserList
+    from itertools import izip_longest as zip_longest
+
+from collections import Iterable
 
 #class Account:
     #""" 用户account类."""
@@ -70,3 +79,20 @@ class BaseHandler(RequestHandler):
             data = api_params
         content = urlopen(api_url % api, params=params, data=data)
         return is_json and json.loads(content) or content
+
+
+class Patterns(UserList):
+    """ URL映射. 支持include sub app urls. """
+    def __init__(self, initlist=[]):
+        self.data = []
+        for item in initlist:
+            if isinstance(item[1], Iterable):
+                item = list(item)
+                len(item)<3 and item.append({})
+                for appitem in item[1]:
+                    appitem = list(appitem)
+                    len(appitem)<3 and appitem.append({})
+                    appkwargs = dict(appitem[2])
+                    appkwargs.update(item[2])
+                    item = (item[0]+appitem[0].lstrip('^'), appitem[1], appkwargs)
+            self.data.append(item)
