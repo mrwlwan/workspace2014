@@ -1,7 +1,7 @@
 # coding=utf8
 from .utils import is_py3
 from tornado.web import RequestHandler
-from webkiss.db import AccountModel, Session
+from .db import AccountModel, Session
 
 if is_py3:
     from collections import UserList
@@ -94,5 +94,7 @@ class Patterns(UserList):
                     len(appitem)<3 and appitem.append({})
                     appkwargs = dict(appitem[2])
                     appkwargs.update(item[2])
-                    item = (item[0]+appitem[0].lstrip('^'), appitem[1], appkwargs)
-            self.data.append(item)
+                    self.data.append((item[0]+appitem[0].lstrip('^'), appitem[1], appkwargs))
+            else:
+                self.data.append(item)
+        print(self.data)
