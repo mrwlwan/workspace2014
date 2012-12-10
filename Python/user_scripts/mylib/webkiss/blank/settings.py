@@ -1,10 +1,7 @@
 # coding=utf8
 
 from webkiss.utils import is_sae
-
-# import request handlers here.
-import handlers.home as home
-import handlers.auth as auth
+from home.urls import urls as home_urls
 
 # wsgi application setting. 如果是SAE应用, 请不要在此处设置 static_path和static dir 请在 config.yaml 指定.
 settings = {
@@ -16,7 +13,7 @@ settings = {
     'title': 'Ross Wan\'s World!',
     'host': 'http://mrwlwan.sinaapp.com',
     'app_key': '2247438201',
-    'app_secret': 'cd27dd2a2a8c198b9eecd091c57cd9bb',
+    'app_secret': '',
     'redirect_uri': '/login', # 填相对地址
     # 下面是本地调试设置
     'debug': True,
@@ -26,6 +23,6 @@ settings = {
 
 # url 映射规则. 如果是SAE应用, static handler 不要显式指定, 在config.yaml里进行设定.
 urls = [
-    (r'/$', home.HomeHandler),
-    (r'/login$', auth.LoginHandler),
+    #(r'/$', home.HomeHandler),
+    (r'/', home_urls),
 ]

@@ -3,7 +3,7 @@
 
 import os, sys
 # 将当前目录加入 sys.path
-sys.path.insert(0, os.path.abspath('.'))
+#sys.path.insert(0, os.path.abspath('.'))
 
 if 'SERVER_SOFTWARE' in os.environ:
     # 在部署环境加入libs目录到sys.path
@@ -12,6 +12,9 @@ if 'SERVER_SOFTWARE' in os.environ:
 from settings import urls, settings
 from webkiss.utils import is_sae
 import webkiss.db as db
+from webkiss.web import Patterns
+
+urls = Patterns(urls)
 
 if is_sae:
     import sae.const

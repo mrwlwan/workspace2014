@@ -97,4 +97,3 @@ class Patterns(UserList):
                     self.data.append((item[0]+appitem[0].lstrip('^'), appitem[1], appkwargs))
             else:
                 self.data.append(item)
-        print(self.data)
