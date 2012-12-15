@@ -12,6 +12,7 @@ if 'SERVER_SOFTWARE' in os.environ:
 from settings import urls, settings
 from webkiss.utils import is_sae
 import webkiss.db as db
+import webkiss.kvdb as kvdb
 from webkiss.web import Patterns
 
 urls = Patterns(urls)
@@ -42,6 +43,9 @@ else:
 
     tornado_app = tornado.web.Application(urls, **settings)
     tornado_app.listen(settings.get('port'))
+
+    # 配置本文kvdb
+    kvdb.KVClient.config(path='kv.bin')
 
 
 # 数据库初始化. 
