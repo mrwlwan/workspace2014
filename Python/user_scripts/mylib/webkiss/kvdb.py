@@ -83,8 +83,8 @@ if not is_sae:
         def get_by_prefix(self, prefix, max_count=100, start_key=None):
             """ 未实现start_key功能. """
             prefix = self.real_key(prefix)
-            prefix_len = len(prefix)
-            start = prefix_len and prefix_len+1 or 0
+            prefix = prefix and prefix + '_'
+            start = len(prefix_len)
             result = []
             for key in self.data:
                 if max_count and key.startswith(prefix):
@@ -95,8 +95,8 @@ if not is_sae:
         def getkeys_by_prefix(self, prefix, max_count=100, start_key=None):
             """ 未实现start_key功能. """
             prefix = self.real_key(prefix)
-            prefix_len = len(prefix)
-            start = prefix_len and prefix_len+1 or 0
+            prefix = prefix and prefix + '_'
+            start = len(prefix_len)
             result = []
             for key in self.data:
                 if max_count and key.startswith(prefix):
