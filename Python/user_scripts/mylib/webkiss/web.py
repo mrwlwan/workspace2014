@@ -38,8 +38,16 @@ class BaseHandler(RequestHandler):
 
     @property
     def is_json(self):
-        """ 是否需要返回 json response. 主是是判断请求参数是否指定 json 为 true 值. """
+        """ 是否需要返回 json response. 主要是判断请求参数是否指定 json 为 true 值. """
         return bool(int(self.get_argument('json', 0)))
+
+    def get_json(self, default={}, encoding='utf8', errors='strict'):
+        """ 返回json对象, 针对 POST Json 请求. """
+        body = self.request.body.strip()
+        if body:
+            return json.loads(body.decode(encoding, errors))
+        else:
+            return default
 
     def get_current_user(self):
         """ 重写. 取得当前用户. 返回 None 或者 Account 对象. """
