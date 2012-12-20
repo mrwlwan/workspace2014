@@ -19,7 +19,7 @@ def config(dialect, is_debug=False):
     global __default_engine__
     global default_session
     __default_engine__ = create_engine(dialect, echo=is_debug)
-    Session.sessionmaker(bind=__default_engine__)
+    Session = sessionmaker(bind=__default_engine__)
     default_session = Session()
 
 # 定义完若干models后调用, 创建数据库
