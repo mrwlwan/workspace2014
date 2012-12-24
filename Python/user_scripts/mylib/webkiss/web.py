@@ -1,7 +1,7 @@
 # coding=utf8
 from .utils import is_py3
 from tornado.web import RequestHandler
-from .db import AccountModel, Session
+from .db import AccountModel, Session, default_session
 
 if is_py3:
     from collections import UserList
@@ -29,7 +29,7 @@ from collections import Iterable
 
 class BaseHandler(RequestHandler):
     """ Handlers 的基类, 实现了若干实用的方法和属性. """
-    models = Session()
+    models = default_session
 
     @property
     def is_ajax(self):

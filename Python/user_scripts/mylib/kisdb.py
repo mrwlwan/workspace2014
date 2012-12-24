@@ -9,7 +9,7 @@ import time, os
 Base = declarative_base()
 Session = sessionmaker()
 engine = None
-session = None
+session = Session
 
 __register_models__ = {}
 
@@ -20,7 +20,7 @@ def config(dialect, is_debug=False):
     global session
     engine = create_engine(dialect, echo=is_debug)
     Session.configure(bind=engine)
-    session = Session()
+    session.bind = engine
 
 # 定义完若干models后调用, 创建数据库
 def create_all(engine=None):
