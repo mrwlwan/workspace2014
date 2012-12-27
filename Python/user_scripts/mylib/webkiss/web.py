@@ -59,7 +59,7 @@ class BaseHandler(RequestHandler):
         """ 重写. 取得登录地址. """
         return 'https://api.weibo.com/oauth2/authorize?redirect_uri=%s&client_id=%s' % (self.settings.get('redirect_uri'), self.settings.get('app_key'))
 
-    def render(self, template_path, ajax_template_path=None, json_obj=None, **kwargs):
+    def render2(self, template_path, ajax_template_path=None, json_obj=None, **kwargs):
         """ 重写 render 方法, 实现对ajax和json的请求处理. """
         if self.is_json:
             return self.write(json_obj)
