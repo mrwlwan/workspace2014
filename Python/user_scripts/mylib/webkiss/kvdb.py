@@ -6,7 +6,7 @@ if not is_sae:
     import pickle, os
 
     class KVClient(object):
-        path = 'kb.bin'
+        path = 'kv.bin'
 
         @classmethod
         def config(cls, path):

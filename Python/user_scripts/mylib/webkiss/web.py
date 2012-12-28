@@ -11,6 +11,7 @@ else:
     from itertools import izip_longest as zip_longest
 
 from collections import Iterable
+import json
 
 #class Account:
     #""" 用户account类."""
