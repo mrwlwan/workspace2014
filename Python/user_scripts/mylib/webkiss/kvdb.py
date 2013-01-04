@@ -34,7 +34,7 @@ if not is_sae:
 
         def real_key(self, key, prefix=''):
             """ 返回存储的key. """
-            return '_'.join([item for item in [self.namespace, prefix, key] if item])
+            return '/'.join([item for item in [self.namespace, prefix, key] if item])
 
         def set(self, key, val, time=0, min_compress_len=0):
             key = self.real_key(key)
@@ -83,7 +83,7 @@ if not is_sae:
         def get_by_prefix(self, prefix, max_count=100, start_key=None):
             """ 未实现start_key功能. """
             prefix = self.real_key(prefix)
-            prefix = prefix and prefix + '_'
+            prefix = prefix and prefix + '/'
             start = len(prefix_len)
             result = []
             for key in self.data:
@@ -95,7 +95,7 @@ if not is_sae:
         def getkeys_by_prefix(self, prefix, max_count=100, start_key=None):
             """ 未实现start_key功能. """
             prefix = self.real_key(prefix)
-            prefix = prefix and prefix + '_'
+            prefix = prefix and prefix + '/'
             start = len(prefix_len)
             result = []
             for key in self.data:
@@ -120,7 +120,7 @@ else:
 
         def real_key(self, key, prefix=''):
             """ 返回存储的key. """
-            return '_'.join([item for item in [self.namespace, prefix, key] if item])
+            return '/'.join([item for item in [self.namespace, prefix, key] if item])
 
         def set(self, key, val, time=0, min_compress_len=0):
             key = self.real_key(key)
@@ -148,20 +148,19 @@ else:
         def get_multi(self, keys, key_prefix=''):
             """ 一次获取多个key值.返回一个dict, 其key为keys的元素, 非real_key. """
             key_prefix = self.real_key(key_prefix)
-            key_prefix = key_prefix and key_prefix + '_'
+            key_prefix = key_prefix and key_prefix + '/'
             return super(Client, self).get_multi(keys, key_prefix=key_prefix)
-
 
         def get_by_prefix(self, prefix, max_count=100, start_key=None):
             """ 未实现start_key功能. """
             prefix = self.real_key(prefix)
-            prefix = prefix and prefix + '_'
+            prefix = prefix and prefix + '/'
             return super(Client, self).get_by_prefix(prefix, max_count=max_count, start_key=start_key)
 
         def getkeys_by_prefix(self, prefix, max_count=100, start_key=None):
             """ 未实现start_key功能. """
             prefix = self.real_key(prefix)
-            prefix = prefix and prefix + '_'
+            prefix = prefix and prefix + '/'
             return super(Client, self).getkeys_by_prefix(prefix, max_count=max_count, start_key=start_key)
 
         def get_info(self):
