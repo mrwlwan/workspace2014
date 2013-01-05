@@ -7,6 +7,7 @@ if not is_sae:
 
     class KVClient(object):
         path = 'kv.bin'
+        data = {}
 
         @classmethod
         def config(cls, path):
@@ -21,8 +22,6 @@ if not is_sae:
                 self.path = path
             if os.path.exists(self.path):
                 self._load()
-            else:
-                self.data = {}
 
         def _dump(self):
             with open(self.path, 'wb') as f:
@@ -30,7 +29,7 @@ if not is_sae:
 
         def _load(self):
             with open(self.path, 'rb') as f:
-                self.data = self.unpickler(f).load()
+                self.data.update(self.unpickler(f).load())
 
         def real_key(self, key, prefix=''):
             """ 返回存储的key. """
