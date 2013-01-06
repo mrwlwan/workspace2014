@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, Integer, String, Date
 from collections import OrderedDict
-import time, os
+import time, datetime, os
 
 Base = declarative_base()
 Session = sessionmaker()
@@ -36,6 +36,21 @@ def register(model, name=None):
 def get_model(model_name):
     global __register_models__
     return __register_models__.get(model_name)
+
+#############################################################################################
+# 便捷函数
+
+# 将行记录Row对象转换为dict
+def as_dict(obj):
+    return dict([(column.name, getattr(obj, column.name)) for column in obj.__table__columns])
+
+# 返回当前时间
+def now():
+    now = datetime.datetime.now()
+    return datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, now.second)
+
+
+#############################################################################################
 
 
 class AccountModel(Base):
