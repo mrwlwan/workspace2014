@@ -42,7 +42,7 @@ def get_model(model_name):
 
 # 将行记录Row对象转换为dict
 def as_dict(obj):
-    return dict([(column.name, getattr(obj, column.name)) for column in obj.__table__columns])
+    return dict([(column.name, getattr(obj, column.name)) for column in obj.__table__.columns])
 
 # 返回当前时间
 def now():
