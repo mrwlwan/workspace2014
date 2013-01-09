@@ -1,7 +1,7 @@
 # coding=utf8
 from .utils import is_py3
 from .db import AccountModel, Session, default_session
-import tornado.web
+from tornado.web import RequestHandler
 
 if is_py3:
     from collections import UserList
@@ -28,7 +28,7 @@ import json
         #return getattr(query_obj, name)
 
 
-class BaseHandler(tornado.web.RequestHandler):
+class BaseHandler(RequestHandler):
     """ Handlers 的基类, 实现了若干实用的方法和属性. """
     models = default_session
 
@@ -60,8 +60,31 @@ class BaseHandler(tornado.web.RequestHandler):
         """ 重写. 取得登录地址. """
         return 'https://api.weibo.com/oauth2/authorize?redirect_uri=%s&client_id=%s' % (self.settings.get('redirect_uri'), self.settings.get('app_key'))
 
+    def render_string(self, template, macro=None, **kwargs):
+        """ 重写, 以适应jinja2, 支持macro输出. """
+        template_path = self.get_template_path()
+        if not template_path:
+            frame = sys._getframe(0)
+            web_file = frame.f_code.co_filename
+            while frame.f_code.co_filename == web_file:
+                frame = frame.f_back
+            template_path = os.path.dirname(frame.f_code.co_filename)
+        with RequestHandler._template_loader_lock:
+            if template_path not in RequestHandler._template_loaders:
+                loader = self.create_template_loader(template_path)
+                RequestHandler._template_loaders[template_path] = loader
+            else:
+                loader = RequestHandler._template_loaders[template_path]
+        namespace = self.get_template_namespace()
+        if macro:
+            return getattr(loader._create_template(template, globals=namespace).module, macro)(**kwargs)
+        else:
+            t = loader.load(template)
+            namespace.update(kwargs)
+            return t.generate(**namespace)
+
     def render2(self, template_path, ajax_template_path=None, json_obj=None, **kwargs):
-        """ 重写 render 方法, 实现对ajax和json的请求处理. """
+        """ 快捷方式, 实现对ajax和json的请求处理. """
         if self.is_json:
             return self.write(json_obj)
         elif self.is_ajax:
@@ -88,66 +111,6 @@ class BaseHandler(tornado.web.RequestHandler):
             data = api_params
         content = urlopen(api_url % api, params=params, data=data)
         return is_json and json.loads(content) or content
-
-
-try:
-    import jinja2
-
-    class JinjaHandler(BaseHandler):
-        """ 使用Jinja template. """
-        _jinja_env = jinja2.Environment(autoescape=True)
-
-        @classmethod
-        def set_template_path(cls, template_path='templates'):
-            """ 设置FileSystemLoader的模板目录. """
-            cls._jinja_env.loader = jinja2.FileSystemLoader(template_path)
-
-        @classmethod
-        def set_loader(cls, loader):
-            """ 设置Loader. """
-            cls.__env__ = loader
-
-        @classmethod
-        def config_env(cls, **kwargs):
-            """ 设置jinja Environment 参数. """
-            for key, value in kwargs.items():
-                setattr(cls._jinja_env, key, value)
-
-        @classmethod
-        def add_filters(cls, *args, **kwargs):
-            """ 添加Filters. """
-            for arg in args:
-                cls._jinja_env.filters[arg.__name__] = arg
-            cls._jinja_env.filters.update(kwargs)
-
-        @classmethod
-        def add_globals(cls, **kwargs):
-            """ 添加globals. """
-            cls._jinja_env.globals.update(kwargs)
-
-        def get_template(self, template, parent=None, globals=None):
-            """ 返回Jinja Template对象. """
-            # 传递Tornado默认的Template Namespace.
-            namespace = self.get_template_namespace()
-            globals and namespace.update(globals)
-            return self._jinja_env.get_template(template, parent, namespace)
-
-        def render_string(self, template, parent=None, globals=None, **kwargs):
-            """ 返回Template Unicode. """
-            return self.get_template(template, parent, globals).render(**kwargs)
-
-        def render(self, template, parent=None, globals=None, **kwargs):
-            """ self.render """
-            self.write(self.render_string(template, parent, globals, **kwargs))
-
-        def render_macro_string(self, template, macro, parent=None, globals=None, **kwargs):
-            return getattr(self.get_template(template, parent, globals).module, macro)(**kwargs)
-
-        def render_macro(self, template, macro, parent=None, globals=None, **kwargs):
-            """ self.render """
-            self.write(self.render_macro_string(template, macro, parent, globals, **kwargs))
-except:
-    print('警告: 未安装Jinja2!')
 
 
 class Patterns(UserList):

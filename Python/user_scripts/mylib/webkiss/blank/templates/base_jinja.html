@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+{% block head %}
+    <meta charset="{% block charset %}utf-8{% endblock %}" />
+    <!--for SAE-->
+    <meta property="wb:webmaster" content="bc352eeb6511d420" />
+    <meta name="robots" content="{% block robots %}all{% endblock %}" />
+    <meta name="author" content="{% block author %}mrwlwan#gmail.com{% endblock %}" />
+    <meta name="Copyright" content="Copyright {% block copyright %}mrwlwan#gmail.com{% endblock %} All Rights Reserved." />
+    <meta name="keywords" content="{% block keywords %}mrwlwan#gmail.com{% endblock %}" />
+    <meta name="description" content="{% block description %}mrwlwan#gmail.com{% endblock %}" />
+    <title>{% block title %}Ross Wan's World{% endblock %}</title>
+    <link rel="shortcut icon" href="/media/favicon.ico">
+    <link rel="alternate" type="application/rss+xml" href="/rss" title="Ross Wan's World!">
+    {% if is_sae %}
+        <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet">
+    {% else %}
+        <link href="/media/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    {% endif %}
+    <link href="/media/user.less" rel="stylesheet/less">
+    {% block head_css %}{% endblock %}
+    <!-- Le HTML5, for IE6-8 support of HTML5 elements -->
+    <!-- [if lt IE 9]>
+    {% if is_sae %}
+        <script src="/static/html5.js"></script>
+    {% else %}
+        <script src="https://raw.github.com/aFarkas/html5shiv/master/dist/html5shiv-printshiv.js"></script>
+    {% endif %}
+    <![endif]-->
+    <script src="/media/less-1.3.0.min.js"></script>
+    {% block head_js %}{% endblock %}
+{% endblock %}
+</head>
+<body>
+{% block head_nav %}
+{% include "modules/head_nav.html" %}
+{% endblock %}
+{% block head_bannder %}{% endblock %}
+<!-- 主体 -->
+<div id="main" class="container">
+    <div class="row">
+        <!-- 侧边栏. -->
+        <div id="main_sidebar" class="span3">
+            {% block sidebar %}{% endblock %}
+        </div>
+        <!-- 主要内容显示区 -->
+        <div id="main_content" class="span9">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+    <div id="global_msg">
+        <div class="alert alert-info">测试信息</div>
+    </div>
+</div>
+<!-- footer. -->
+{% block footer %}{% endblock %}
+<!-- ajax 效果这用 -->
+<div id="mymodal" class="modal hide fade span10">
+	<div class="modal-header">
+		<a href="#" class="close" data-dismiss="modal">&times;</a>
+        <h3>My Modal</h3>
+    </div>
+    <div class="modal-body loading"></div>
+</div>
+{% if is_sae %}
+    <script src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js"></script>
+    <script src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+{% else %}
+    <script src="/media/jquery/jquery-1.8.3.min.js"></script>
+    <script src="/media/bootstrap/js/bootstrap.min.js"></script>
+{% endif %}
+<script src="/media/user.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
