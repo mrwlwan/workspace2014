@@ -1,7 +1,7 @@
 # coding=utf8
 from .utils import is_py3
-from tornado.web import RequestHandler
 from .db import AccountModel, Session, default_session
+import tornado.web
 
 if is_py3:
     from collections import UserList
@@ -28,7 +28,7 @@ import json
         #return getattr(query_obj, name)
 
 
-class BaseHandler(RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
     """ Handlers 的基类, 实现了若干实用的方法和属性. """
     models = default_session
 
@@ -42,7 +42,7 @@ class BaseHandler(RequestHandler):
         """ 是否需要返回 json response. 主要是判断请求参数是否指定 json 为 true 值. """
         return bool(int(self.get_argument('json', 0)))
 
-    def get_json(self, default={}, encoding='utf8', errors='strict'):
+    def get_bodyjson(self, default={}, encoding='utf8', errors='strict'):
         """ 返回json对象, 针对 POST Json 请求. """
         body = self.request.body.strip()
         if body:
@@ -66,7 +66,7 @@ class BaseHandler(RequestHandler):
             return self.write(json_obj)
         elif self.is_ajax:
             template_path = ajax_template_path or template_path
-        return super(BaseHandler, self).render(template_path, **kwargs)
+        return self.render(template_path, **kwargs)
 
     def weibo_request(self, api, **kwargs):
         """ weibo api 请求调用.
@@ -88,6 +88,66 @@ class BaseHandler(RequestHandler):
             data = api_params
         content = urlopen(api_url % api, params=params, data=data)
         return is_json and json.loads(content) or content
+
+
+try:
+    import jinja2
+
+    class JinjaHandler(BaseHandler):
+        """ 使用Jinja template. """
+        _jinja_env = jinja2.Environment(autoescape=True)
+
+        @classmethod
+        def set_template_path(cls, template_path='templates'):
+            """ 设置FileSystemLoader的模板目录. """
+            cls._jinja_env.loader = jinja2.FileSystemLoader(template_path)
+
+        @classmethod
+        def set_loader(cls, loader):
+            """ 设置Loader. """
+            cls.__env__ = loader
+
+        @classmethod
+        def config_env(cls, **kwargs):
+            """ 设置jinja Environment 参数. """
+            for key, value in kwargs.items():
+                setattr(cls._jinja_env, key, value)
+
+        @classmethod
+        def add_filters(cls, *args, **kwargs):
+            """ 添加Filters. """
+            for arg in args:
+                cls._jinja_env.filters[arg.__name__] = arg
+            cls._jinja_env.filters.update(kwargs)
+
+        @classmethod
+        def add_globals(cls, **kwargs):
+            """ 添加globals. """
+            cls._jinja_env.globals.update(kwargs)
+
+        def get_template(self, template, parent=None, globals=None):
+            """ 返回Jinja Template对象. """
+            # 传递Tornado默认的Template Namespace.
+            namespace = self.get_template_namespace()
+            globals and namespace.update(globals)
+            return self._jinja_env.get_template(template, parent, namespace)
+
+        def render_string(self, template, parent=None, globals=None, **kwargs):
+            """ 返回Template Unicode. """
+            return self.get_template(template, parent, globals).render(**kwargs)
+
+        def render(self, template, parent=None, globals=None, **kwargs):
+            """ self.render """
+            self.write(self.render_string(template, parent, globals, **kwargs))
+
+        def render_macro_string(self, template, macro, parent=None, globals=None, **kwargs):
+            return getattr(self.get_template(template, parent, globals).module, macro)(**kwargs)
+
+        def render_macro(self, template, macro, parent=None, globals=None, **kwargs):
+            """ self.render """
+            self.write(self.render_macro_string(template, macro, parent, globals, **kwargs))
+except:
+    print('警告: 未安装Jinja2!')
 
 
 class Patterns(UserList):

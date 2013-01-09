@@ -27,6 +27,17 @@ def attr(attr_name, arg):
 
 
 #####################################################################################
+# Jinja2 Custom Filters
+def func(method, *args, **kwargs):
+    """ 执行函数(方法). """
+    return method(*args, **kwargs)
+
+def getitem(obj, key):
+    """ 取item. 如obj[1], obj.get('name'). 如需要obj.key, 可以jinja2内置的Filter: attr. """
+    return obj[key] if isinstance(key, int) else obj.get(key)
+
+
+#####################################################################################
 class BaseView:
     default_loader = default_loader = Loader(os.path.join(os.path.split(os.path.abspath(__file__))[0], 'templates'))
 
