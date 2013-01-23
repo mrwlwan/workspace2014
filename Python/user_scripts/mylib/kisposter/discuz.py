@@ -37,8 +37,8 @@ class DiscuzHelper(Helper):
         uid_reg = re.compile(r'uid-(?P<uid>\d+)')
         for page in pages:
             forum_url = forum_url_format.format(page)
-            page = self.urlget(forum_url).text
-            root = lxml.html.fromstring(page)
+            forum_content = self.urlget(forum_url).text
+            root = lxml.html.fromstring(forum_content)
             tbodies = root.xpath('//form[@id="moderate"]/table/tbody')
             for tbody in tbodies:
                 subject_search = tbody_id_reg.match(tbody.attrib.get('id', ''))
@@ -99,6 +99,44 @@ class DiscuzHelper(Helper):
                 thread['fid'] = fid
                 yield thread
 
+    def get_replies(self, url=None, tid=None, pages=[1,], filter=None):
+        """ Generator, 返回回复信息. """
+        thread_url_format = url or self.generate_url(tid=tid, page='{0}')
+        tbody_id_reg = re.compile(r'(?P<subject>stickthread|normalthread)')
+        uid_reg = re.compile(r'uid-(?P<uid>\d+)')
+        for page in pages:
+            thread_url = thread_url_format.format(page)
+            thread_content = self.urlget(thread_url).text
+            root = lxml.html.fromstring(thread_content)
+            for table in root.xpath('//div[@id="postlist"]/div/table'):
+                reply = {}
+                # pid
+                reply['pid'] = table.attrib.get('id')[3:]
+                for td in table.xpath('tr[1]/td'):
+                    if td.attrib.get('class')=='pls':
+                        for item in td:
+                            if item.attrib.get('class')=='pi':
+                                reply['author'] = item.text_content().strip()
+                                # uid
+                                reply.update(uid_reg.search(item.find('div//a').attrib.get('href')).groupdict())
+                            elif not item.attrib:
+                                usergroup = item.find('p[last()]').text_content().strip()
+                                # usergroup
+                                if usergroup: reply['usergroup'] = usergroup
+                    elif td.attrib.get('class')=='plc':
+                        for item in td:
+                            if item.attrib.get('class')=='pi':
+                                # floor
+                                reply['floor'] = int(item.find('strong').text_content().strip('\r\n #'))
+                                reply['published'] = DatetimeString(item.findtext('div[@class="pti"]//em').split('发表于')[-1].strip())
+                            elif item.attrib.get('class')=='pct':
+                                # content
+                                reply['content'] = item.findtext('div[@class="pcb"]/div//td').strip()
+                                # comment
+                                reply['comment'] = item.findtext('div[@class="pcb"]/div[@class="cm"]').strip()
+                reply['tid'] = tid
+                reply['page'] = page
+                yield reply
 
 
 class DiscuzReply(Poster):
