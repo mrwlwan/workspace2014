@@ -15,6 +15,7 @@ from lib.jobefhr_corp import JobefhrCorp
 from lib.tzrc_corp import TZRCCorp
 from lib.qlrc_corp import QLRCCorp
 from lib.jobxmrc_corp import JobXmrcCorp
+from lib.jobwzrc_corp import WzrcCorp
 from lib.zjrc_corp2 import ZJRCCorp as ZJRCCorp2
 from lib.job168_corp2 import Job168Corp as Job168Corp2
 from funcs import shortcut_input
@@ -22,7 +23,7 @@ import sys, multiprocessing, time
 
 CORPCLASSES = (
     {'title': 'Job5156', 'class': Job5156Corp},
-    #{'title': '51Job', 'class': Job51Corp},
+    {'title': '51Job', 'class': Job51Corp},
     {'title': '51JobLogo', 'class': Job51LogoCorp},
     {'title': 'Jobcn', 'class': JobcnCorp},
     {'title': '南方人才网', 'class': Job168Corp},
@@ -32,8 +33,9 @@ CORPCLASSES = (
     #{'title': '浙江人才网', 'class': ZJRCCorp},
     {'title': '台州人才网', 'class': TZRCCorp},
     {'title': '瑞安人才网', 'class': Job577Corp},
-    {'title': '齐鲁人才网', 'class': QLRCCorp},
-    {'title': '中国注塑人才网', 'class': JobINJCorp},
+    {'title': '温州人才网', 'class': WzrcCorp},
+    #{'title': '齐鲁人才网', 'class': QLRCCorp},
+    #{'title': '中国注塑人才网', 'class': JobINJCorp},
     #{'title': '服装人才网', 'class': JobefhrCorp},
     #{'title': '浙江人才网2', 'class': ZJRCCorp2},
     #{'title': '南方人才网2', 'class': Job168Corp2},

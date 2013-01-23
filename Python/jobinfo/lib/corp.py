@@ -84,7 +84,7 @@ class Corp(multiprocessing.Process):
 
     @coroutine
     def check_exists(self):
-        """ 存在的话返回其 info_from, 否则返回 None. """
+        """ Generator, 存在的话返回其 info_from, 否则返回 None. """
         corp_names_cache = {}
         corp_names_cache_list = []
         cache_length = 0
@@ -118,8 +118,9 @@ class Corp(multiprocessing.Process):
                 print(corp_info['name'], end=' ')
                 info_from = check_exists.send(corp_info)
                 if not info_from:
-                    corp_info = self.fetch_corp(corp_info)
-                    corp_info = self.before_save(corp_info)
+                    if self.corp_regs:
+                        corp_info = self.fetch_corp(corp_info)
+                        corp_info = self.before_save(corp_info)
                     self.queue.put(corp_info)
                 else:
                     print('已经存在于: %s' % info_from)

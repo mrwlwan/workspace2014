@@ -7,34 +7,29 @@ import urllib.parse, os.path, sys, logging, getpass, time, datetime, re
 logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 
-class DateTimeString:
+class DatetimeString:
     """ Datetime 和 String 的结合. """
-    def __init__(self, datetime=None, datetime_string=None, format='%Y-%m-%d %H:%M:%S'):
+    def __init__(self, datetime_string, format='%Y-%m-%d %H:%M:%S'):
         """ '必须设置datetime或者datetime_string参数之一, 两者皆设则只认datetime. """
-        if datetime:
-            self.__datetime = datetime
-            self.__datetime_string = None
-        elif datetime_string:
-            self.__datetime_string = datetime_string
-            self.__datetime = None
-        else:
-            raise Exception('必须设置datetime或者datetime_string参数之一')
-        self.__format = format
+        self._datetime_string = datetime_string
+        self._datetime = None
+        self._format = format
 
     @property
     def datetime(self):
-        if not self.__datetime:
-            self.__datetime = datetime.datetime.strptime(self.__format)
-        return self.__datetime
+        if not self._datetime:
+            self._datetime = datetime.datetime.strptime(self._datetime_string, self._format)
+        return self._datetime
 
     @property
     def string(self):
-        if not self.__datetime_string:
-            self.__datetime_string = datetime.datetime.strftime(self.__format)
-        return self.__datetime_string
+        return self._datetime_string
 
     def __str__(self):
         return self.string
+
+    def get_string(self, format):
+        return datetime.datetime.strftime(self.datetime, format)
 
 
 class Helper:
@@ -43,10 +38,11 @@ class Helper:
 
     def __init__(self, domain, session=None):
         self.domain = domain
-        self.session = session or request.session()
+        self.session = session or requests.session()
         self.caches = {}
         self.urlget = self.session.get
         self.urlpost = self.session.post
+        self.urlhead = self.session.head
 
     def get_absolute_url(self, url):
         """ 返回绝对地址. """
@@ -55,9 +51,11 @@ class Helper:
     def get_charset(self):
         """ 取得页面charset. """
         if not self.caches.get('charset'):
-            if not self.caches.get('home_page'):
-                self.caches['home_page'] = self.urlget(self.domain)
-            search_obj = self.CHARSET_REG.search(self.caches.get('home_page'))
+            #if not self.caches.get('home_page'):
+                #self.caches['home_page'] = self.urlget(self.domain)
+            #search_obj = self.CHARSET_REG.search(self.caches.get('home_page'))
+            content_type = self.urlhead(self.domain).headers.get('content-type', 'charset=utf8')
+            search_obj = self.CHARSET_REG.search(content_type)
             self.caches['charset'] = search_obj.group(1) if search_obj else 'utf8'
         return self.caches.get('charset')
 
