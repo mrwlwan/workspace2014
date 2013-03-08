@@ -42,3 +42,4 @@ def urlopen(url, params=None, data=None, timeout=None, encoding='utf8', errors='
         url = urlunparse(url_parse.values())
     data = url_parse_module.urlencode(data).encode('utf8')
     return url_request_module.urlopen(url, data, timeout=timeout).read().decode(encoding, errors)
+
