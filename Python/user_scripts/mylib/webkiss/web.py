@@ -24,7 +24,7 @@ def with_exception(method):
             return method(*args, **kwargs)
         except:
             traceback.print_exc()
-            return kwargs.get('errr') and {'error': '操作失败'} or None
+            return kwargs.get('error') and {'error': '操作失败'} or None
     return wrapper
 
 
@@ -131,6 +131,7 @@ class BaseHandler(RequestHandler):
             if kwargs:
                 for key, value in kwargs.items():
                     if hasattr(obj, key) and isinstance(getattr(model, key), InstrumentedAttribute):
+                        print(obj, key, value)
                         setattr(obj, key, value)
             else:
                 for key in self.request.arguments:
@@ -146,9 +147,12 @@ class BaseHandler(RequestHandler):
     def _delete(self, model, obj, error=False, commit=True):
         """ 更新. obj可以是对象也可以是主键值. """
         obj = self._retrieve(model, obj)
-        self.models.delete(obj)
-        commit and self.models.commit()
-        return error and {'error': 0} or True
+        if obj:
+            self.models.delete(obj)
+            commit and self.models.commit()
+            return error and {'error': 0} or True
+        else:
+            return error and {'error': '删除的对象不存在'} or False
 
 
 class WeiboLoginHandler(BaseHandler):
