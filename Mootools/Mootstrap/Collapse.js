@@ -1,11 +1,13 @@
 /* COLLAPSE CLASS DEFINITION */
 define(['./utils.js'], function(utils){
     var Collapse = new Class({
-        Implements: Options,
+        Implements: [Options, Events],
         options: {
             'toggler_selector': '.accordion-toggle',
             'content_selector': '.accordion-body',
-            'always_hide': false
+            'always_hide': false,
+            'duration': 250,
+            'transition': true
         },
         'initialize': function(container, options){
             this.container = $(container);
@@ -19,7 +21,7 @@ define(['./utils.js'], function(utils){
             this.transition_list = [];
         },
         'toElement': function(){
-            return this.el.getParent('accordion-group');
+            return this.container;
         },
         '_add_events': function(){
             var thisobj = this;
@@ -36,7 +38,7 @@ define(['./utils.js'], function(utils){
         },
         // 返回指定的content
         'get_content': function(toggler){
-            return utils.get_target(toggler)[0] || toggler.getParent().getNext();
+            return utils.get_targets(toggler)[0] || toggler.getParent().getNext();
         },
         // 返回所有contents
         'get_contents': function(){
@@ -66,12 +68,32 @@ define(['./utils.js'], function(utils){
             });
         },
         'show': function(content){
-            if(this.is_transitioning() || this.is_active(content)) return;
-            this.transition(this.get_active_contents(), [content]);
+            var thisobj = this;
+            if(!this.is_active(content)){
+                if(this.options.transition){
+                    this.is_transitioning() || this.transition(this.get_active_contents(), [content]);
+                }else{
+                    thisobj.fireEvent('show', content);
+                    this.get_active_contents().each(function(item){
+                        thisobj.fireEvent('hide', item);
+                        item.removeClass('in');
+                        thisobj.fireEvent('hiden', item);
+                    });
+                    content.addClass('in');
+                    thisobj.fireEvent('shown', content);
+                }
+            }
         },
         'hide': function(content){ 
-            if(this.is_transitioning() || !this.is_active(content)) return;
-            this.transition([content]);
+            if(this.is_active(content)){
+                if(this.options.transition){
+                    this.is_transitioning() || this.transition([content]);
+                }else{
+                    thisobj.fireEvent('hide', content);
+                    content.addClass('in');
+                    thisobj.fireEvent('hiden', content);
+                }
+            }
         },
         'toggle': function(content){
             if(this.is_active(content)){
@@ -90,9 +112,13 @@ define(['./utils.js'], function(utils){
                 target.store('margin-top', target.getStyle('margin-top') || 0);
                 thisobj.transition_list.push(new Fx.Tween(target, {
                     'property': 'margin-top',
-                    'duration': 250,
+                    'duration': thisobj.options.duration,
+                    'onStart': function(){
+                        thisobj.fireEvent('hide', item);
+                    },
                     'onComplete': function(){
                         item.removeClass('in');
+                        thisobj.fireEvent('hiden', item);
                     }
                 }).start(-target.getSize().y));
             });
@@ -106,9 +132,13 @@ define(['./utils.js'], function(utils){
                 }
                 thisobj.transition_list.push(new Fx.Tween(target, {
                     'property': 'margin-top',
-                    'duration': 250,
+                    'duration': thisobj.options.duration,
                     'onStart': function(){
                         item.addClass('in');
+                        thisobj.fireEvent('show', item);
+                    },
+                    'onComplete': function(){
+                        thisobj.fireEvent('shown', item);
                     }
                 }).start(margin_top));
             });
@@ -117,9 +147,10 @@ define(['./utils.js'], function(utils){
 
 
     $$('body').addEvent('click:relay([data-toggle=collapse])', function(e){
-        var container = utils.get_target(this, 'data-parent')[0] || this.getParent('.accordion');
-        var always_hide = this.get('data-always_hide') && true || false;
-        var collapse = new Collapse(container, {'always_hide': !always_hide});
+        var container = utils.get_targets(this, 'data-parent')[0] || this.getParent('.accordion');
+        //var always_hide = this.get('data-always_hide');
+        var options = utils.get_options(container, {'always_hide': 'bool', 'duration': 'int', 'transition': 'bool'});
+        var collapse = new Collapse(container, options);
         collapse.toggle(collapse.get_content(this));
     });
 

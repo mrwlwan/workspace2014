@@ -3,7 +3,7 @@ define(['./utils.js'], function(utils){
     var toggle = '[data-toggle=dropdown]'
 
     function get_parent(el){
-        var selector = utils.get_target(el)[0];
+        var selector = utils.get_targets(el)[0];
         if(!selector){
             selector = el.getParent();
         }
