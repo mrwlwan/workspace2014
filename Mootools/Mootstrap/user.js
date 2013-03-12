@@ -1,2 +1,2 @@
-require(['Dropdown', 'domReady!'], function(Dropdown){
+require(['Dropdown', 'Collapse', 'domReady!'], function(Dropdown){
 });
