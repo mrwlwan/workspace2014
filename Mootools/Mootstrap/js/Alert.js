@@ -5,7 +5,8 @@ define(['./utils.js'], function(utils){
     var Alert = new Class({
         Implements: [Options, Events],
         options: {
-            'fade': true
+            'fade': true,
+            'duration': 250
         },
         'initialize': function(el, options){
             this.el = $(el);
@@ -30,17 +31,29 @@ define(['./utils.js'], function(utils){
             return utils.get_targets(this.el)[0] || this.el.getParent();
         },
         'close': function(e){
+            var thisobj = this;
             var container = this.get_container();
             this.fireEvent('close');
-            this.options.fade && container.fade('out');
-            container.destroy();
-            this.fireEvent('closed');
+            if(this.options.fade){
+                container.setStyle('opacity', 1);
+                new Fx.Tween(container, {
+                    'property': 'opacity',
+                    'duration': this.options.duration,
+                    'onComplete': function(){
+                        container.destroy();
+                        thisobj.fireEvent('closed');
+                    }
+                }).start(0);
+            }else{
+                container.destroy();
+                thisobj.fireEvent('closed');
+            }
             return false;
         }            
     });
 
     $$('body').addEvent('click:relay('+dismiss+')', function(e){
-        var options = utils.get_options(this, {'fade': 'bool'});
+        var options = utils.get_options(this, {'fade': 'bool', 'duration': 'int'});
         new Alert(this, options).close(e);
     });
 

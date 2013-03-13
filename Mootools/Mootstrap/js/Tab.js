@@ -3,7 +3,8 @@ define(['./utils.js'], function(utils){
     var Tab = new Class({
         Implements: [Options, Events],
         options: {
-            'fade': false
+            'fade': false,
+            'duration': 250
         },
         'initialize': function(container, options){
             this.container = $(container);
@@ -40,26 +41,24 @@ define(['./utils.js'], function(utils){
         'get_content': function(tab){
             return utils.get_targets(tab)[0];
         },
-        'transition': function(hide_content, show_content){
+        'transition': function(content, start, end, method, callback){
             var thisobj = this;
-            [{'content': hide_content, 'start': 0.6, 'end': 0, 'method': 'removeClass'},
-             {'content': show_content, 'start': 0, 'end': 1, 'method': 'addClass'}
-            ].each(function(item){
-                if(thisobj.options.fade || item.content.hasClass('fade')){
-                    item.content.setStyle('opacity', item.start);
-                    var tween = new Fx.Tween(item.content, {
-                        'property': 'opacity',
-                        'duration': 'short',
-                        'onComplete': function(){
-                            item.content[item.method]('in')[item.method]('active');
-                            item.content.setStyle('opacity', 1);
-                        }
-                    });
-                    tween.start(item.end);
-                }else{
-                    item.content[item.method]('in')[item.method]('active');
-                }
-            });
+            if(thisobj.options.fade || content.hasClass('fade')){
+                content.setStyle('opacity', start);
+                end>=1 && content.addClass('in').addClass('active');
+                var tween = new Fx.Tween(content, {
+                    'property': 'opacity',
+                    'duration': thisobj.options.duration/2,
+                    'onComplete': function(){
+                        content[method]('in')[method]('active');
+                        callback && callback();
+                    }
+                });
+                tween.start(end);
+            }else{
+                content[method]('in')[method]('active');
+                callback && callback();
+            }
         },                    
         'active': function(tab){
             var active_tab = this.get_active_tab();
@@ -69,8 +68,8 @@ define(['./utils.js'], function(utils){
             this._get_tab_wraps(tab).addClass('active');
             var hide_content = this.get_content(active_tab);
             var show_content = this.get_content(tab);
-            this.transition(hide_content, show_content);
-            this.fireEvent.delay(250, this, ['shown', tab, active_tab]);
+            this.transition(hide_content, 1, 0.2, 'removeClass', this.transition.pass([show_content, 0.3, 1, 'addClass'], this));
+            this.fireEvent.delay(this.options.duration, this, ['shown', tab, active_tab]);
         },
         'show': function(tab){
             if(this.is_active(tab)) return;
@@ -80,7 +79,9 @@ define(['./utils.js'], function(utils){
 
     $$('body').addEvent('click:relay([data-toggle=tab])', function(e){
         e.preventDefault();
-        new Tab(this.getParent('.nav-tabs')).show(this);
+        var container = this.getParent('.nav-tabs');
+        var options = utils.get_options(container, {'duration': 'int', 'fade': 'bool'})
+        new Tab(container, options).show(this);
     });
 
     return Tab;
