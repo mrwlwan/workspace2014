@@ -52,6 +52,7 @@ define(['./utils.js'], function(utils){
                         'duration': 'short',
                         'onComplete': function(){
                             item.content[item.method]('in')[item.method]('active');
+                            item.content.setStyle('opacity', 1);
                         }
                     });
                     tween.start(item.end);
