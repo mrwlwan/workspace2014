@@ -147,6 +147,7 @@ define(['./utils.js'], function(utils){
 
 
     $$('body').addEvent('click:relay([data-toggle=collapse])', function(e){
+        e.preventDefault();
         var container = utils.get_targets(this, 'data-parent')[0] || this.getParent('.accordion');
         //var always_hide = this.get('data-always_hide');
         var options = utils.get_options(container, {'always_hide': 'bool', 'duration': 'int', 'transition': 'bool'});
