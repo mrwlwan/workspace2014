@@ -5,7 +5,7 @@ define(['./utils.js'], function(utils){
     var Alert = new Class({
         Implements: [Options, Events],
         options: {
-            'false': true
+            'fade': true
         },
         'initialize': function(el, options){
             this.el = $(el);
@@ -22,8 +22,8 @@ define(['./utils.js'], function(utils){
             var thisobj = this;
             this.el.addEvent('click', function(e){
                 e.stop();
-                thisobj.close(e);
                 document.fireEvent('click');
+                thisobj.close(e);
             });
         },
         'get_container': function(){
