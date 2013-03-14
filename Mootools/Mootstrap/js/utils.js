@@ -25,6 +25,26 @@ define(function(){
         return classes.trim().split(/\s+/);
     }
 
+    function has_classes(el, classes){
+        return split_classes(classes).every(function(item){
+            return el.hasClass(item);
+        });
+    }
+
+    function add_classes(el, classes){
+        split_classes(classes).each(function(item){
+            el.addClass(item);
+        });
+        return el;
+    }
+
+    function remove_classes(el, classes){
+        split_classes(classes).each(function(item){
+            el.removeClass(item);
+        });
+        return el;
+    }
+
     return {
         'create_or_retrieve': function(el, name, cls, options){
             var obj = el.retrieve(name);
@@ -59,22 +79,22 @@ define(function(){
             }
             return false;
         },
-        'has_classes': function(el, classes){
-            return split_classes(classes).every(function(item){
-                return el.hasClass(item);
+        'has_classes': has_classes,
+        'add_classes': add_classes,
+        'remove_classes': remove_classes,
+        'back_drop': function(el, options){
+            el = el || document.body;
+            var new_el = new Element('div', {'class': 'modal-backdrop'});
+            options.classes && add_classes(new_el, options.classes);
+            options.styles && el.setStyles(styles);
+            document.body.grab(new_el);
+            new_el.addEvent('click', function(){
+                options.callback && options.callback();
+                new_el.fade('out');
+                new_el.destroy();
             });
-        },
-        'add_classes': function(el, classes){
-            split_classes(classes).each(function(item){
-                el.addClass(item);
-            });
-            return el;
-        },
-        'remove_classes': function(el, classes){
-            split_classes(classes).each(function(item){
-                el.removeClass(item);
-            });
-            return el;
-        },
+            new_el.fade(0.8);
+            return new_el;
+        }
     }
 });
