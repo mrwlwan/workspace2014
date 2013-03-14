@@ -1,7 +1,7 @@
 /* SCROLLSPY CLASS DEFINITION */
 define(['./utils.js'], function(utils){
     var ScrollSpy = new Class({
-        Implements: Options,
+        Implements: [Options,Events],
         options: {
             'offset': 10
         },
@@ -59,6 +59,7 @@ define(['./utils.js'], function(utils){
                 this._previous_nav_wraps && this._previous_nav_wraps.removeClass('active');
                 if(index>=0){
                     this._previous_nav_wraps = this.nav_wraps[index].addClass('active');
+                    this.fireEvent('active');
                 }
                 this._previous_index = index;
             }
