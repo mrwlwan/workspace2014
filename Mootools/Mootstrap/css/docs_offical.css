@@ -836,14 +836,14 @@ form.bs-docs-example {
   background-image: url(../img/glyphicons-halflings-white.png);
   opacity: 1;
 }
-/*.bs-docs-sidenav.affix {*/
-  /*top: 40px;*/
-/*}*/
-/*.bs-docs-sidenav.affix-bottom {*/
-  /*position: absolute;*/
-  /*top: auto;*/
-  /*bottom: 270px;*/
-/*}*/
+.bs-docs-sidenav.affix {
+  top: 40px;
+}
+.bs-docs-sidenav.affix-bottom {
+  position: absolute;
+  top: auto;
+  bottom: 270px;
+}
 
 
 
@@ -907,9 +907,9 @@ form.bs-docs-example {
     width: 166px;
     margin-top: 20px;
   }
-  /*.bs-docs-sidenav.affix {*/
-    /*top: 0;*/
-  /*}*/
+  .bs-docs-sidenav.affix {
+    top: 0;
+  }
 }
 
 /* Tablet
@@ -951,11 +951,11 @@ form.bs-docs-example {
     width: auto;
     margin-bottom: 20px;
   }
-  /*.bs-docs-sidenav.affix {*/
-    /*position: static;*/
-    /*width: auto;*/
-    /*top: 0;*/
-  /*}*/
+  .bs-docs-sidenav.affix {
+    position: static;
+    width: auto;
+    top: 0;
+  }
 
   /* Unfloat the back to top link in footer */
   .footer {

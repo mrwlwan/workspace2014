@@ -3,70 +3,74 @@ define(['./utils.js'], function(utils){
     var Affix = new Class({
         Implements: Options,
         options: {
-            //'offset': {'top': 0, 'bottom': 0}
             'offset': 0
         },
         'initialize': function(el, options){
             this.el = $(el);
             this.setOptions(options);
+            // el原本位置
+            this.original_position = this.el.getPosition();
+            this.offset = this._offset(this.options.offset);
+            this._previous_state = 'top';
+            this._previous_offset = {};
             if(!this.el.retrieve('affix')){
                 this._add_events();
                 this.el.store('affix', this);
             }
+            // 初始化位置
             this.check_position();
         },
         'toElement': function(){
             return this.el;
         },
         '_add_events': function(){
-            var thisobj = this;
-            window.addEvent('scroll', function(e){
-                console.log('window scroll form affix');
-                thisobj.check_position.attempt([], thisobj);
-            });
-            //window.addEvent('click', function(e){
-                //thisobj.check_position.delay(1, thisobj);
-            //});
+            window.addEvent('scroll', this.check_position.bind(this));
+        },
+        '_offset': function(data){
+            var offset = {};
+            if(typeOf(offset)=='object'){
+                offset.top = Function.from(data.top || 0);    
+                offset.bottom = Function.from(data.bottom || 0);    
+            }else{
+                offset.top = offset.bottom = Function.from(data);
+            }
+            return offset;
+        },
+        'position': function(state, offset){
+            switch(state){
+                case 'top':
+                    this.el.removeClass('affix').setStyle('top', null).setStyle('bottom', null);
+                    break;
+                case 'affix':
+                    this.el.addClass('affix').setStyle('top', offset.top).setStyle('bottom', null);
+                    break;
+                case 'bottom':
+                    this.el.addClass('affix').setStyle('top', null).setStyle('bottom', offset.bottom);
+            }
         },
         'check_position': function(){
-            console.log('start check position');
+            // 判断是否隐藏
             if(!utils.is_visible(this.el)) return;
-            console.log('affix is visible');
-            var scroll_height = window.getScrollSize().y;
+            //var scroll_height = document.getSize().y;
+            var scroll_height = window.getScrollSize().y - window.getSize().y;
             var scroll_top = window.getScroll().y;
-            var coordinates = this.el.getCoordinates();
-            var offset = this.options.offset;
-            var offset_bottom = offset.bottom;
-            var offset_top = offset.top;
-            var reset = 'affix affix-top affix-bottom';
+            var size = this.el.getSize();
+            var state;
+            var offset = {'top': this.offset.top(), 'bottom': this.offset.bottom()};
             var affix;
 
-            if(typeOf(offset)!='object') offset_bottom = offset_top = offset;
-            if(typeOf(offset_top)=='function') offset_top = offset.top();
-            if(typeOf(offset_bottom)=='function') offset_bottom = offset.bottom();
-
-            console.log(offset_bottom);
-            console.log(coordinates.top);
-            console.log(coordinates.height);
-            console.log(scroll_height);
-            console.log(scroll_top);
-
-            if(this.unpin != null && (scroll_top + this.unpin <= coordinates.top)){
-                affix = false;
-            }else if(offset_bottom != null && (coordinates.top + coordinates.height + (affix!='bottom'?scroll_top:0) >= scroll_height - offset_bottom)){
-                affix = 'bottom';
-            }else if(offset_top != null && scroll_top <= offset_top){
-                affix = 'top';
+            if(scroll_top <= this.original_position.y - offset.top){
+                state = 'top';
+            }else if(scroll_top <= scroll_height - offset.bottom - size.y){
+                state = 'affix';
             }else{
-                affix = false;
+                state = 'bottom';
             }
-
-            if(this.affixed===affix) return;
-            this.affixed = affix;
-            this.unpin = affix == 'bottom' ? coordinates.top - scroll_top : null;
-
-            console.log(affix);
-            utils.remove_classes(this.el, reset).addClass('affix' + (affix ? '-' + affix : ''));
+            if(state!=this._previous_state || offset.top!=this._previous_offset.top || offset.bottom!=this._previous_offset.bottom){
+                this.position(state, offset);
+            }
+            this._previous_state = state;
+            this._previous_offset = offset;
         }
     });
 
