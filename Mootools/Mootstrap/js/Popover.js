@@ -2,7 +2,6 @@
 define(['./utils.js', './Tooltip.js'], function(utils, Tooltip){
     var Popover = new Class({
         Extends: Tooltip, // 继承自Tooltip类
-        Implements: [Options, Events],
         //Implements: [Options, Events],
         options: {
             'transition': true,

@@ -1,4 +1,4 @@
-require(['js/Dropdown', 'js/Collapse', 'js/Alert', 'js/Button', 'js/Tab', 'js/Affix', 'js/ScrollSpy', 'js/Modal', 'js/Tooltip', 'js/Popover', 'domReady!'], function(Dropdown, Collapse, Alert, Button, Tab, Affix, ScrollSpy, Modal, Tooltip, Popover){
+require(['js/Dropdown', 'js/Collapse', 'js/Alert', 'js/Button', 'js/Tab', 'js/Affix', 'js/ScrollSpy', 'js/Modal', 'js/Tooltip', 'js/Popover', 'js/Typeahead', 'domReady!'], function(Dropdown, Collapse, Alert, Button, Tab, Affix, ScrollSpy, Modal, Tooltip, Popover, Typeahead){
     $$('.bs-docs-sidenav').each(function(el){
         new Affix(el, {
             'offset': {
