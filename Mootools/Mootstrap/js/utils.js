@@ -98,6 +98,15 @@ define(function(){
             });
             new_el.fade(0.8);
             return new_el;
+        },
+        // 相当于jQuery的one
+        'one': function(el, event_type, fn){
+            var temp_fn = function(){
+                el.removeEvent(event_type, temp_fn);
+                return fn.attempt(arguments);
+            };
+            el.addEvent(event_type, temp_fn);
+            return el;
         }
     }
 });

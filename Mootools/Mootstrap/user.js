@@ -1,4 +1,4 @@
-require(['js/Dropdown', 'js/Collapse', 'js/Alert', 'js/Button', 'js/Tab', 'js/Affix', 'js/ScrollSpy', 'js/Modal', 'js/Tooltip', 'js/Popover', 'js/Typeahead', 'domReady!'], function(Dropdown, Collapse, Alert, Button, Tab, Affix, ScrollSpy, Modal, Tooltip, Popover, Typeahead){
+require(['js/Dropdown', 'js/Collapse', 'js/Alert', 'js/Button', 'js/Tab', 'js/Affix', 'js/ScrollSpy', 'js/Modal', 'js/Tooltip', 'js/Popover', 'js/Typeahead', 'js/Carousel', 'domReady!'], function(Dropdown, Collapse, Alert, Button, Tab, Affix, ScrollSpy, Modal, Tooltip, Popover, Typeahead, Carousel){
     $$('.bs-docs-sidenav').each(function(el){
         new Affix(el, {
             'offset': {
@@ -36,4 +36,6 @@ require(['js/Dropdown', 'js/Collapse', 'js/Alert', 'js/Button', 'js/Tab', 'js/Af
             }
         });
     });
+
+    //new Carousel($('myCarousel'));
 });
