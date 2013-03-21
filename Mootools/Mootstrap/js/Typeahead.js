@@ -7,13 +7,15 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
             'items': 8, // 显示最大数目
             'menu': '<ul class="typeahead dropdown-menu"></ul>',
             'item': '<li><a href="#"></a></li>',
-            'minLength': 1 // 最少输入字符数
+            'minLength': 1, // 最少输入字符数
+            'container': null
         },
         'initialize': function(el, options){
             this.el = el;
             this.setOptions(options);
             this.menu = Elements.from(this.options.menu)[0];
-            this.inject(this.menu);
+            this._inject_menu(this.menu);
+            this.el.grab(this.menu, 'after');
             this.shown = false;
             this.focused = false;
             this.mousedover = false;
@@ -29,15 +31,15 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
             var thisobj = this;
             this.el.addEvents({
                 'focus': this._focus.bind(this),
-                'blur',this._blur.bind(this),
+                'blur': this._blur.bind(this),
                 //'keypress', this._keypress.bind(this),
-                'keyup', this._keyup.bind(this),
-                'keydown', this._keydown.bind(this)
+                'keyup': this._keyup.bind(this),
+                'keydown': this._keydown.bind(this)
             });
             this.menu.addEvents({
-                'click', this._click.bind(this),
-                'mouseenter:relay(li)', this._mouseenter.bind(this),
-                'mouseleave:relay(li)', this._mouseleave.bind(this)
+                'click': this._click.bind(this),
+                'mouseenter:relay(li)': this._mouseenter.bind(this),
+                'mouseleave:relay(li)': this._mouseleave.bind(this)
             });
         },
         '_inject_menu': function(menu){
@@ -89,21 +91,26 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
                 }
             });
         },
-        'lookup': function(){
-            var query = this.el.get('value');
-            if(query || query.length < this.options.minLength){
-                //return this.shown ? this.hide() : this;
-                return this.hide();
-            }
+        'get_source': function(){
             var items;
             switch(typeOf(this.options.source)){
                 case 'function':
                     items = this.process(this.options.source(query));
                     break;
                 case 'string':
-                    this.options.source = this.load_source(this.options.source.replace('{query}', query);
+                    this.options.source = this.load_source(this.options.source.replace('{query}', query));
                 case 'array':
                     items = this.options.source;
+            }
+            return items;
+        },
+        'lookup': function(){
+            var query = this.el.get('value');
+            if(!query || query.length < this.options.minLength){
+                //return this.shown ? this.hide() : this;
+                return this.hide();
+            }
+            var items = this.get_source();
             return items ? this.process(items, query) : this;
         },
         'process': function(items, query){
@@ -115,7 +122,7 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
             if(!items.length){
                 //return this.shown ? this.hide() : this;
                 return this.hide();
-            });
+            };
             return this.render(items.slice(0, this.options.items), query).show();
         },
         'matcher': function(item, query){
@@ -152,10 +159,10 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
             var thisobj = this;
             this.menu.empty();
             items.each(function(item, index){
-                if(index==0) item.addClass('active');
                 var i = Elements.from(thisobj.options.item)[0];
+                if(index==0) i.addClass('active');
                 i.set('data-value', item);
-                i.getElement('a').set('html', thisobj.highlighter(item));
+                i.getElement('a').set('html', thisobj.highlighter(item, query));
                 i.inject(thisobj.menu)
             });
             return this;
@@ -184,11 +191,11 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
         '_move': function(e){
             if(!this.shown) return;
             switch(e.code) {
-                //case 9: // tab
-                //case 13: // enter
-                //case 27: // escape
-                    //e.preventDefault();
-                    //break;
+                case 9: // tab
+                case 13: // enter
+                case 27: // escape
+                    e.preventDefault();
+                    break;
                 case 38: // up arrow
                     e.preventDefault();
                     this.prev();
@@ -200,15 +207,15 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
             }
             e.stopPropagation();
         },
-        'keydown': function(e){
+        '_keydown': function(e){
       //this.suppressKeyPressRepeat = ~$.inArray(e.keyCode, [40,38,9,13,27])
-            this.move(e);
+            this._move(e);
         },
         //'keypress': function(e){
             //this.move(e)
         //},
-        'keyup': function(e){
-            switch(e.keyCode) {
+        '_keyup': function(e){
+            switch(e.code) {
                 case 40: // down arrow
                 case 38: // up arrow
                 case 16: // shift
@@ -230,25 +237,27 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
             e.stopPropagation();
             e.preventDefault();
         },
-        'focus': function(e){
+        '_focus': function(e){
+            e.stop();
             this.focused = true;
+            return false;
         },
-        'blur': function(e){
+        '_blur': function(e){
             this.focused = false;
             if (!this.mousedover && this.shown) this.hide();
         },
-        'click': function(e, target){
+        '_click': function(e, target){
             e.stopPropagation();
             e.preventDefault();
             this.select();
-            this.el.focus();
+            this.focused = true;
         },
-        'mouseenter': function(e, target){
+        '_mouseenter': function(e, target){
             this.mousedover = true
             this.menu.getElement('.active').removeClass('active');
             target.addClass('active');
         },
-        'mouseleave': function(e, target){
+        '_mouseleave': function(e, target){
             this.mousedover = false;
             if (!this.focused && this.shown) this.hide();
         }
@@ -256,7 +265,9 @@ define(['./utils.js', './more/Elements_from.js'], function(utils){
 
 
     $(document.body).addEvent('focus:relay([data-provide=typeahead])', function(e){
-        new Typeahead(this);
+        if(this.retrieve('typeahead')) return;
+        var options = utils.get_options(this, {'source': 'json', 'items': 'int', 'minLength': 'int'})
+        new Typeahead(this, options);
     });
 
     return Typeahead;

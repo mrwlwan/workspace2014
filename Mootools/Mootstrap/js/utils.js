@@ -13,6 +13,9 @@ define(function(){
                     return false;
             }
             return true;
+        },
+        'json': function(value){
+            return JSON.decode(value);
         }
     };
 
