@@ -1,5 +1,5 @@
 /* BUTTON CLASS DEFINITION */
-define(['./utils.js'], function(utils){
+define(['mootstrap/utils'], function(utils){
     var Button = new Class({
         Implements: Options,
         options: {

@@ -1,5 +1,5 @@
 /* SCROLLSPY CLASS DEFINITION */
-define(['./utils.js'], function(utils){
+define(['mootstrap/utils'], function(utils){
     var ScrollSpy = new Class({
         Implements: [Options,Events],
         options: {

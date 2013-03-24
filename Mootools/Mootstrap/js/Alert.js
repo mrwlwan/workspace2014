@@ -1,5 +1,5 @@
 /* ALERT CLASS DEFINITION */
-define(['./utils.js'], function(utils){
+define(['mootstrap/utils'], function(utils){
     var dismiss = '[data-dismiss=alert]';
 
     var Alert = new Class({

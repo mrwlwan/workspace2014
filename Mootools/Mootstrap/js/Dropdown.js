@@ -1,5 +1,5 @@
 /* DROPDOWN CLASS DEFINITION */
-define(['./utils.js'], function(utils){
+define(['mootstrap/utils'], function(utils){
     var toggle = '[data-toggle=dropdown]'
 
     function get_parent(el){

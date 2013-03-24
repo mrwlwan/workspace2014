@@ -1,4 +1,10 @@
-require(['js/Dropdown', 'js/Collapse', 'js/Alert', 'js/Button', 'js/Tab', 'js/Affix', 'js/ScrollSpy', 'js/Modal', 'js/Tooltip', 'js/Popover', 'js/Typeahead', 'js/Carousel', 'domReady!'], function(Dropdown, Collapse, Alert, Button, Tab, Affix, ScrollSpy, Modal, Tooltip, Popover, Typeahead, Carousel){
+require.config({
+    baseUrl: './',
+    paths: {mootstrap: 'js'}
+});
+
+
+require(['mootstrap/Dropdown', 'mootstrap/Collapse', 'mootstrap/Alert', 'mootstrap/Button', 'mootstrap/Tab', 'mootstrap/Affix', 'mootstrap/ScrollSpy', 'mootstrap/Modal', 'mootstrap/Tooltip', 'mootstrap/Popover', 'mootstrap/Typeahead', 'mootstrap/Carousel', 'domReady!'], function(Dropdown, Collapse, Alert, Button, Tab, Affix, ScrollSpy, Modal, Tooltip, Popover, Typeahead, Carousel){
     $$('.bs-docs-sidenav').each(function(el){
         new Affix(el, {
             'offset': {

@@ -1,5 +1,5 @@
 /* MODAL CLASS DEFINITION */
-define(['./utils.js', './more/DragMove.js'], function(utils, DragMove){
+define(['mootstrap/utils', 'mootstrap/more/DragMove'], function(utils, DragMove){
     var Modal = new Class({
         Implements: [Options, Events],
         options: {

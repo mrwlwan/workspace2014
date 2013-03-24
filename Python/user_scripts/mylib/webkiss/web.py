@@ -52,7 +52,7 @@ class BaseHandler(RequestHandler):
         """ 返回指定keys的dict. """
         result = {}
         for key in keys or self.request.arguments:
-            result[key] = self.get_argument(key)
+            result[key] = self.get_argument(key, None)
         result.update(extra)
         return result
 

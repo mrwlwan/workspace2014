@@ -1,5 +1,5 @@
 /* TOOLTIP CLASS DEFINITION */
-define(['./utils.js', './more/Elements_from.js'], function(utils){
+define(['mootstrap/utils', 'mootstrap/more/Elements_from'], function(utils){
     var Tooltip = new Class({
         Implements: [Options, Events],
         options: {

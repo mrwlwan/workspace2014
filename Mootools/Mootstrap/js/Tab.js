@@ -1,5 +1,5 @@
 /* TAB CLASS DEFINITION */
-define(['./utils.js'], function(utils){
+define(['mootstrap/utils'], function(utils){
     var Tab = new Class({
         Implements: [Options, Events],
         options: {

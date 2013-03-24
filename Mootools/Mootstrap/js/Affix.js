@@ -1,5 +1,5 @@
 /* AFFIX CLASS DEFINITION */
-define(['./utils.js'], function(utils){
+define(['mootstrap/utils'], function(utils){
     var Affix = new Class({
         Implements: Options,
         options: {
