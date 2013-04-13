@@ -62,36 +62,41 @@ def now():
 class AccountModel(Base):
     __tablename__ = 'accounts'
 
+    # id
+    id = Column(Integer, primary_key=True)
     # uid
-    uid = Column(Integer, primary_key=True)
+    uid = Column(Integer, nullable=False)
+    # 昵称
+    nick = Column(String(128))
+    # 头像图片链接
+    avatar = Column(String(256))
+    # 淘宝店ID
+    shop_id = Column(String(16))
+    # 淘宝店名
+    shop_title = Column(String(256))
     # 授权码.
     code = Column(String(128), nullable=False)
     # access_token.
-    _access_token = Column(String(128))
+    access_token = Column(String(128))
+    # refresh_token
+    refresh_token = Column(String(128))
     # 过期时间.
     expiry = Column(Integer)
-    # 首次登录时间.
+    # 首次注册时间.
     insert_date = Column(Date, default=datetime.datetime.now)
+    # 登录类型
+    login_type = Column(String(64), nullable=False)
+    # 权限
+    permision = Column(Integer, default=2)
 
-    _verbose_name = {'uid': 'UID', 'code': '授权码', 'access_token': 'Access Token', 'expiry': '到期时间', 'insert_date': '注册日期'}
-
-    def __init__(self, uid, code, access_token, expiry):
-        self.uid, self.code, self.access_token, self.expiry = uid, code, access_token, expiry
+    _verbose_name = {'id': 'ID', 'uid': 'UID', 'nick': '昵称', 'code': '授权码', 'access_token': 'Access Token', 'expiry': '到期时间', 'insert_date': '注册日期'}
 
     def __repr__(self):
         return self.uid
 
     @property
     def is_expiries(self):
-        return self.expiry < time.time()
+        return self.expiry is not None and self.expiry < time.time()
 
-    @property
-    def access_token(self):
-        """ 尽量用此方法取得access_token. """
-        return None if self.is_expiries else self._access_token
-
-    @access_token.setter
-    def access_token(self, token):
-        self._access_token = token
 
 register(AccountModel, 'account')

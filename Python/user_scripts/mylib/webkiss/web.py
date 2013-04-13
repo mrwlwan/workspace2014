@@ -1,9 +1,9 @@
 # coding=utf8
-from .utils import is_py3
+from .utils import is_py3, urlopen
 from .db import AccountModel, Session, default_session, as_dict
-from tornado.web import RequestHandler
+from tornado.web import RequestHandler, authenticated
 from sqlalchemy.orm.attributes import InstrumentedAttribute
-import requests, time, traceback, functools
+import time, requests, traceback, functools
 
 if is_py3:
     from collections import UserList
@@ -18,7 +18,7 @@ import json
 
 # Decorators
 def with_exception(method):
-    @functools.wraps(method)
+    #@functools.wraps(method)
     def wrapper(*args, **kwargs):
         try:
             return method(*args, **kwargs)
@@ -27,10 +27,17 @@ def with_exception(method):
             return kwargs.get('error') and {'error': '操作失败'} or None
     return wrapper
 
+def admin_authenticated(method):
+    def middleware(self, *args, **kwargs):
+        if self.current_user and self.current_user.permision<=1:
+            return method(self, *args, **kwargs)
+        return self.write({'error': '受限制服务'})
+    return authenticated(middleware)
+
 
 class BaseHandler(RequestHandler):
     """ Handlers 的基类, 实现了若干实用的方法和属性. """
-    opener = requests.Session()
+    #opener = requests.Session()
 
     def initialize(self):
         self.models = Session()
@@ -71,18 +78,18 @@ class BaseHandler(RequestHandler):
 
     def get_current_user(self):
         """ 重写. 取得当前用户. 返回 None 或者 Account 对象. """
-        uid = self.get_secure_cookie('uid')
-        if not uid:
+        account_id = self.get_secure_cookie('account_id')
+        if not account_id:
             return None
-        uid = uid.decode('utf8')
-        account = self.models.query(AccountModel).get(uid)
+        account_id = account_id.decode('utf8')
+        account = self.models.query(AccountModel).get(account_id)
         if not account or account.is_expiries:
             return None
         return account
 
-    def get_login_url(self):
+    def get_login_url(self, login_type=None):
         """ 重写. 取得登录地址. """
-        return 'https://api.weibo.com/oauth2/authorize?client_id=%s&response_type=code&redirect_uri=%s' % (self.settings.get('app_key'), self.settings.get('login_redirect_uri'))
+        return '/auth/login'
 
     def render_string(self, template, macro=None, **kwargs):
         """ 重写, 以适应jinja2, 支持macro输出. """
@@ -131,7 +138,6 @@ class BaseHandler(RequestHandler):
             if kwargs:
                 for key, value in kwargs.items():
                     if hasattr(obj, key) and isinstance(getattr(model, key), InstrumentedAttribute):
-                        print(obj, key, value)
                         setattr(obj, key, value)
             else:
                 for key in self.request.arguments:
@@ -153,29 +159,6 @@ class BaseHandler(RequestHandler):
             return error and {'error': 0} or True
         else:
             return error and {'error': '删除的对象不存在'} or False
-
-
-class WeiboLoginHandler(BaseHandler):
-    """ 微博登录处理. """
-    def get(self):
-        code = self.get_argument('code')
-        if code:
-            url = 'https://api.weibo.com/oauth2/access_token?client_id=%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s&code=%s' % (self.settings.get('app_key'), self.settings.get('app_secret'), self.settings.get('login_redirect_uri'), code)
-            result = self.opener.post(url).json()
-            uid = result.get('uid')
-            account = self.models.query(AccountModel).get(uid)
-            if account:
-                account.code, account.access_token = code, result.get('access_token')
-            else:
-                self.models.add(AccountModel(
-                    int(result.get('uid')),
-                    code,
-                    result.get('access_token'),
-                    int(result.get('expires_in'))+time.time()
-                ))
-            self.models.commit()
-            self.set_secure_cookie('uid', result.get('uid'))
-        self.redirect(self.request.headers.get('Referer'))
 
 
 class WeiboHelper:
