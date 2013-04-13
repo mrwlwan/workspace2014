@@ -1,6 +1,7 @@
 # coding=utf8
-from .utils import is_py3, urlopen
+from .utils import is_py3
 from .db import AccountModel, Session, default_session, as_dict
+import kisurllib
 from tornado.web import RequestHandler, authenticated
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 import time, requests, traceback, functools
@@ -181,7 +182,7 @@ class WeiboHelper:
         else:
             params = None
             data = api_params
-        content = urlopen(api_url % api, params=params, data=data)
+        content = kisurllib.urlopen(api_url % api, params=params, data=data)
         return is_json and json.loads(content) or content
 
 

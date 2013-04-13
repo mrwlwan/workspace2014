@@ -35,7 +35,7 @@ class Client:
         }
         params.update(kwargs)
         if not params.get('redirect_uri'): raise Exception('未指定redirect_uri')
-        return '%s?%s' % (self.AUTHORIZE_URL, urllib.parse.urlencode(params))
+        return '%s?%s' % (self.AUTHORIZE_URL, kisurllib.urlencode(params))
 
     def fetch_token(self, code, **kwargs):
         """ 获取Access token. """
