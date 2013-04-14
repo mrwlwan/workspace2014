@@ -10,11 +10,13 @@ if is_py3:
     from urllib.parse import *
     from http.cookiejar import LWPCookieJar, DefaultCookiePolicy
     unicode = str
+    bytes = bytes
 else:
     from urllib import *
     from urllib2 import *
     from urlparse import *
     from cookielib import LWPCookieJar, DefaultCookiePolicy
+    unicode = unicode
     bytes = str
 
 _opener = None

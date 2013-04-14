@@ -18,8 +18,8 @@ class Client:
 
     def urlopen(self, url, params=None, data=None, **kwargs):
         """ HTTP(S) Request. 返回json. """
-        response = kisurllib.urlopen(url, params=params, data=data, **kwargs)
-        return json.loads(response.read().decode('utf8'))
+        response = kisurllib.urlopen(url, params=params, data=data, **kwargs).read().decode('utf8')
+        return json.loads(response)
 
     def gen_sign(self, **kwargs):
         """ 创建签名. """
