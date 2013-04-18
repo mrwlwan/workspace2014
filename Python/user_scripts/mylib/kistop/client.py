@@ -95,7 +95,7 @@ class Client:
     def get(self, api, params={}, **kwargs):
         """ HTTP GET 请求. 返回json对象. """
         temp = self.gen_params(api, **params)
-        return self.urlopen(self.API_REQUEST_URL, params=temp)
+        return self.urlopen(self.API_REQUEST_URL, params=temp, **kwargs)
 
     def post(self, api, params={}, **kwargs):
         """ HTTP POST 请求. 返回json对象. """
