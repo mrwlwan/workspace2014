@@ -16,6 +16,7 @@ from lib.tzrc_corp import TZRCCorp
 from lib.qlrc_corp import QLRCCorp
 from lib.jobxmrc_corp import JobXmrcCorp
 from lib.jobwzrc_corp import WzrcCorp
+from lib.jobbaidu_corp import JobbaiduCorp
 from lib.zjrc_corp2 import ZJRCCorp as ZJRCCorp2
 from lib.job168_corp2 import Job168Corp as Job168Corp2
 from funcs import shortcut_input
@@ -27,6 +28,7 @@ CORPCLASSES = (
     {'title': '51JobLogo', 'class': Job51LogoCorp},
     {'title': 'Jobcn', 'class': JobcnCorp},
     {'title': '南方人才网', 'class': Job168Corp},
+    {'title': '富海人才网', 'class': JobbaiduCorp},
     {'title': '厦门人才网', 'class': JobXmrcCorp},
     #{'title': '58同城', 'class': Job58Corp},
     #{'title': '中国服装人才网', 'class': JobcfwCorp},
