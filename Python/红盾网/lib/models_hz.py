@@ -5,7 +5,7 @@ from sqlalchemy import Table, Column, Integer, Float, String, Text, Boolean, Dat
 from sqlalchemy.orm import relationship, backref
 import os
 
-Base, DatabaseInterface = Database.generator('register_corps_dg.sqlite', debug=False)
+Base, DatabaseInterface = Database.generator('register_corps_hz.sqlite', debug=False)
 
 class CorpModel(Base, DatabaseInterface):
     __tablename__ = 'register_corps'
