@@ -17,9 +17,9 @@ class Register_corp:
         self.charset = 'gbk'
         self.opener = Opener(encoding=self.charset)
         # 6位机关代码; 6位
-        self.org_code = '441302'
+        self.org_code = '441322'
         # 企业性质号码; 2位, 00~30为内资;40~50为外资.
-        self.nature_num = 0
+        self.nature_num = 40
         # 流水号; 4位
         self.ord_num= 1
         self.corp_url = 'http://wsnj.gdgs.gov.cn/aiccps/SearchServlet?service=getEntityInfoByPage&registerNo=%s'
@@ -163,7 +163,16 @@ class Register_corp:
     def report(self):
         #corps = self.model.filter_by(status='登记成立', insert_date=datetime.date.today())
         #corps = self.model.filter_by(status='登记成立', insert_date=datetime.date(2011,11,3))
-        corps = self.model.filter(CorpModel.status=='登记成立', CorpModel.insert_date==datetime.date.today(), or_(CorpModel.addr.like('%仲%'), CorpModel.addr.like('%博罗%')))
+        corps = self.model.filter(
+            CorpModel.status=='登记成立',
+            CorpModel.insert_date==datetime.date.today(),
+            #CorpModel.insert_date==datetime.date(2013,1,1),
+            #CorpModel.register_code.like('441322%'),
+            #or_(
+                #CorpModel.addr.like('%仲恺%'),
+                #CorpModel.addr.like('%博罗%')
+            #)
+        )
         rows = []
         fields = (
             ('名称', 'name'),
