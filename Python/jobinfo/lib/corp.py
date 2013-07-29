@@ -120,8 +120,9 @@ class Corp(multiprocessing.Process):
                 if not info_from:
                     if self.corp_regs:
                         corp_info = self.fetch_corp(corp_info)
-                        corp_info = self.before_save(corp_info)
+                    corp_info = self.before_save(corp_info)
                     self.queue.put(corp_info)
+                    print('保存成功!')
                 else:
                     print('已经存在于: %s' % info_from)
         self._msg('\n%s 抓取完毕!' % self.info_from)

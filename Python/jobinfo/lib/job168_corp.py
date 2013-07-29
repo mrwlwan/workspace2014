@@ -9,7 +9,8 @@ class Job168Corp(Corp):
             'info_from': '南方人才网',
             'corplist_url': 'http://www.job168.com/person/searchresult1.jsp?page={page_no}&keyword=',
             'corp_url': 'http://www.job168.com/person/etcpos_{corp_code}.html',
-            'corplist_reg': re.compile(r'etcpos_(?P<corp_code>[\d]+)\.html" target="_blank"><span class="Blue1">\s+(?P<name>[^\s<]+)', re.S),
+            #'corplist_reg': re.compile(r'etcpos_(?P<corp_code>[\d]+)\.html" target="_blank"><span class="Blue1">\s+(?P<name>[^\s<]+)', re.S),
+            'corplist_reg': re.compile(r'etcpos_(?P<corp_code>[\d]+)\.html" class="coname" target="_blank">\s+(?P<name>[^\s<]+)', re.S),
             'corp_regs': [
                 re.compile(r'<span>联系地址：</span>(?P<addr>[^<]+)', re.S),
                 re.compile(r'<span>联 系 人：</span>(?P<contact_person>[^<]+)', re.S),
